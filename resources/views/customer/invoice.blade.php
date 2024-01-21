@@ -54,7 +54,7 @@
                                             <span>CHECKOUT</span>
                                         </div>
                                         <div class="iv-right col-6 text-md-right">
-                                            <span>#34445998</span>
+                                            <span>{{ $invoice }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -64,13 +64,11 @@
                                             <h3>Checkout</h3>
                                             <h5>{{ auth()->user()->nama }}</h5>
                                             <p>{{ auth()->user()->email }}</p>
-                                            <p>Rekening :</p>
-                                            <p>{{ auth()->user()->wallet->rekening }}</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-md-right">
                                         <ul class="invoice-date">
-                                            <li>Invoice Date : now()</li>
+                                            <li>Tanggal : {{ now() }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -78,7 +76,6 @@
                                     <table class="table table-bordered table-hover text-right">
                                         <thead>
                                             <tr class="text-capitalize">
-                                                <th scope="col"></th>
                                                 <th scope="col">Produk</th>
                                                 <th scope="col">Harga</th>
                                                 <th scope="col">Qty</th>
@@ -86,34 +83,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td style="vertical-align: middle;"> <img width="100px"
-                                                        src="{{ asset('storage/produk/' . $keranjang->produk->foto) }}"
-                                                        alt=""></td>
-                                                <td style="vertical-align: middle;">
-                                                    {{ $keranjang->produk->nama_produk }}</td>
-                                                <td style="vertical-align: middle;">
-                                                    Rp.{{ number_format($keranjang->produk->harga, 0, ',', '.') }},00
-                                                </td>
-                                                <td style="vertical-align: middle;">{{ $keranjang->jumlah_produk }}
-                                                </td>
-                                                <td style="vertical-align: middle;">
-                                                    Rp.{{ number_format($keranjang->total_harga, 0, ',', '.') }},00
-                                                </td>
-                                            </tr>
+                                            @foreach ($selectedProducts as $selectedProduct)
+                                                <tr>
+                                                    <td style="vertical-align: middle;">
+                                                        {{ $selectedProduct->produk->nama_produk }}</td>
+                                                    <td style="vertical-align: middle;">
+                                                        Rp.{{ number_format($selectedProduct->produk->harga, 0, ',', '.') }},00
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        {{ $selectedProduct->jumlah_produk }}
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        Rp.{{ number_format($selectedProduct->total_harga, 0, ',', '.') }},00
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="4">total balance :</td>
-                                                <td>$140</td>
+                                                <td colspan="3">Total Seluruh Harga :</td>
+                                                <td>Rp.{{ number_format($totalHarga, 0, ',', '.') }},00</td>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
                             <div class="invoice-buttons text-right">
-                                <a href="#" class="invoice-btn">print invoice</a>
-                                <a href="#" class="invoice-btn">send invoice</a>
+                                <a href="#" class="invoice-btn" id="printInvoiceBtn">Cetak Invoice</a>
                             </div>
                         </div>
                     </div>
@@ -122,4 +118,23 @@
         </div>
     </div>
     <!-- main content area end -->
+
+    <script>
+        document.getElementById('printInvoiceBtn').addEventListener('click', function() {
+            printInvoice();
+        });
+
+        function printInvoice() {
+            var invoiceContent = document.querySelector('.invoice-area').innerHTML;
+
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Print Invoice</title></head><body>');
+            printWindow.document.write(invoiceContent);
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+
+            printWindow.print();
+        }
+    </script>
 @endsection

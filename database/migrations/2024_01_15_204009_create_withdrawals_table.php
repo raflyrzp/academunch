@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('withdrawals', function (Blueprint $table) {
             $table->id();
             $table->string('rekening');
-            $table->integer('nominal');
+            $table->double('nominal', 12);
             $table->string('kode_unik');
             $table->enum('status', ['menunggu', 'dikonfirmasi', 'ditolak']);
             $table->timestamps();

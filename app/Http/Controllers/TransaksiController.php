@@ -48,7 +48,7 @@ class TransaksiController extends Controller
             'jumlah_produk' => 'required|numeric',
             'id_produk' => 'required',
             'id_user' => 'required',
-            'harga_produk' => 'required'
+            'harga' => 'required'
         ]);
 
         $id_user = $request->id_user;
@@ -59,7 +59,7 @@ class TransaksiController extends Controller
         }
 
         $jumlah_produk = $request->jumlah_produk;
-        $total_harga = $request->harga_produk * $jumlah_produk;
+        $total_harga = $request->harga * $jumlah_produk;
 
         $produk_sama = Keranjang::where('id_user', $id_user)->where('id_produk', $produk->id)->first();
 
@@ -99,10 +99,10 @@ class TransaksiController extends Controller
         $selectedProducts = Keranjang::where('id_user', $id_user)
             ->get();
 
-        $totalPrice = $selectedProducts->sum('total_harga');
+        $totalHarga = $selectedProducts->sum('total_harga');
         $userWallet = Wallet::where('id_user', $id_user)->first();
 
-        if ($userWallet->saldo < $totalPrice) {
+        if ($userWallet->saldo < $totalHarga) {
             return redirect()->route('customer.index')->with(['error' => 'Saldo anda tidak mencukupi.']);
         }
         $invoice = 'INV' . auth()->user()->id . now()->format('dmYHis');
@@ -125,9 +125,13 @@ class TransaksiController extends Controller
             $product->delete();
         }
 
-        $userWallet->saldo -= $totalPrice;
+        $userWallet->saldo -= $totalHarga;
         $userWallet->save();
+        // $transaksis = Transaksi::where('invoice', $invoice)->get();
 
-        return redirect()->route('customer.index')->with(['success' => 'Berhasil melakukan pembelian!']);
+        $title = 'Invoice';
+        return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
+
+        // return redirect()->route('customer.index')->with(['success' => 'Berhasil melakukan pembelian!']);
     }
 }

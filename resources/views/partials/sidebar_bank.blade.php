@@ -13,10 +13,11 @@
                           <li class="{{ $title === 'Dashboard' ? 'active' : '' }}"><a
                                   href="{{ route('bank.index') }}"><i class="ti-dashboard"></i>
                                   <span>Dashboard</span></a></li>
-                          <li class="{{ $title === 'Top Up' ? 'active' : '' }}"><a href="{{ route('bank.index') }}"><i
-                                      class="ti-user"></i> <span>Top Up</span></a></li>
+                          <li class="{{ $title === 'Top Up' ? 'active' : '' }}"><a href="{{ route('bank.topup') }}"><i
+                                      class="ti-plus"></i> <span>Top Up</span></a></li>
                           <li class="{{ $title === 'Tarik Tunai' ? 'active' : '' }}"><a
-                                  href="{{ route('bank.index') }}"><i class="ti-user"></i> <span>Tarik Tunai</span></a>
+                                  href="{{ route('bank.withdrawal') }}"><i class="ti-archive"></i> <span>Tarik
+                                      Tunai</span></a>
                           </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>
                           </li>

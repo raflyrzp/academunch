@@ -17,10 +17,24 @@ class BankController extends Controller
         return view('customer.topup', compact('wallets'));
     }
 
+    public function bankTopupIndex()
+    {
+        $title = 'Top Up';
+        $topups = TopUp::all();
+        return view('bank.topup', compact('topups', 'title'));
+    }
+
+    public function bankWithdrawalIndex()
+    {
+        $title = 'Tarik Tunai';
+        $withdrawals = Withdrawal::all();
+        return view('bank.withdrawal', compact('withdrawals', 'title'));
+    }
+
     public function topup(Request $request)
     {
         $request->validate([
-            'nominal' => 'required|integer',
+            'nominal' => 'required|integer|max:255',
             'rekening' => 'required|string|exists:wallets,rekening',
         ]);
 

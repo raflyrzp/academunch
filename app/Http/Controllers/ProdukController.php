@@ -41,7 +41,7 @@ class ProdukController extends Controller
             'nama_produk' => 'required|string|max:255|unique:produks,nama_produk',
             'harga' => 'required|numeric',
             'stok' => 'required|numeric',
-            'foto' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'foto' => 'image|mimes:jpeg,jpg,png|max:2048',
             'desc' => 'required',
             'id_kategori' => 'required|exists:kategoris,id',
         ]);
@@ -59,7 +59,7 @@ class ProdukController extends Controller
                 'nama_produk' => $request->nama_produk,
                 'harga' => $request->harga,
                 'stok' => $request->stok,
-                'foto' => $foto->hashName(),
+                'foto' => $foto->hashName() || 'default.png',
                 'desc' => $request->desc,
                 'id_kategori' => $request->id_kategori
             ]);
@@ -115,6 +115,9 @@ class ProdukController extends Controller
             ]);
 
             $foto = $request->file('foto');
+            if ($produk->foto !== 'default.png') {
+                Storage::delete('public/produk/' . $produk->foto);
+            }
             $foto->storeAs('public/produk', $foto->hashName());
 
             Storage::delete('public/produk/' . $produk->foto);

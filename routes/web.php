@@ -44,10 +44,12 @@ Route::middleware(['auth', 'userAkses:bank'])->group(function () {
     Route::get('/bank', [DashboardController::class, 'bankIndex'])->name('bank.index');
 
     // Top Up
+    Route::get('/bank/topup', [BankController::class, 'bankTopupIndex'])->name('bank.topup');
     Route::put('/bank/konfirmasiTopup/{id}', [BankController::class, 'konfirmasiTopup'])->name('konfirmasi.topup');
     Route::put('/bank/tolakTopup/{id}', [BankController::class, 'tolakTopup'])->name('tolak.topup');
 
     // Tarik Tunai
+    Route::get('/bank/withdrawal', [BankController::class, 'bankWithdrawalIndex'])->name('bank.withdrawal');
     Route::put('/bank/konfirmasiWithdrawal/{id}', [BankController::class, 'konfirmasiWithdrawal'])->name('konfirmasi.withdrawal');
     Route::put('/bank/tolakWithdrawal/{id}', [BankController::class, 'tolakWithdrawal'])->name('tolak.withdrawal');
 });
