@@ -138,7 +138,7 @@
                                 <div class="form-group">
                                     <label for="jumlah_produk">Qty</label>
                                     <input type="number" id="jumlah_produk" class="form-control" min="1"
-                                        max="{{ $produk->stok }}" name="jumlah_produk" required>
+                                        max="{{ $produk->stok }}" name="jumlah_produk" value="1" required>
                                 </div>
 
                             </div>

@@ -42,7 +42,7 @@ class UserController extends Controller
 
         $user = User::create($validation);
 
-        $rekening = '64' . $user->id . now('dmYHis');
+        $rekening = '64' . $user->id . now()->format('dmYHis');
         Wallet::create([
             'rekening' => $rekening,
             'id_user' => $user->id,

@@ -26,14 +26,9 @@
 </head>
 
 <body>
-    <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <!-- preloader area start -->
     <div id="preloader">
         <div class="loader"></div>
     </div>
-    <!-- preloader area end -->
     <!-- login area start -->
     <div class="login-area">
         <div class="container">
@@ -48,7 +43,7 @@
                         <div class="form-gp">
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email">
-                            <i class="ti-user"></i>
+                            <i class="ti-email"></i>
                             <div class="text-danger"></div>
                         </div>
                         <div class="form-gp">

@@ -3,7 +3,6 @@
           <div class="sidebar-header">
               <div class="logo">
                   <a href=""><img src="assets/images/icon/logo.png" alt="logo"></a>
-                  {{-- <a href="{{ route('admin.index') }}">Fintech App</a> --}}
               </div>
           </div>
           <div class="main-menu">

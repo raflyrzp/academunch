@@ -32,12 +32,6 @@
 </head>
 
 <body>
-    <!-- preloader area start -->
-    {{-- <div id="preloader">
-        <div class="loader"></div>
-    </div> --}}
-    <!-- preloader area end -->
-
     @if (session('success'))
         <link rel="stylesheet" href="{{ asset('assets/js/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}" />
 
@@ -102,7 +96,6 @@
         <!-- footer area end-->
     </div>
     <!-- page container area end -->
-
 
 
     <!-- jquery latest version -->
