@@ -90,11 +90,9 @@
                                     <div class="col-3 mb-5">
                                         <div class="card h-100"
                                             style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
-                                            <!-- Product itmage-->
                                             <img class="card-img-top" src="{{ asset('storage/produk/' . $produk->foto) }}"
                                                 alt="{{ $produk->nama_produk }}"
                                                 style="max-height: 15em; object-fit: cover;" />
-                                            <!-- Product details-->
                                             <div class="card-body p-4">
                                                 <div class="text-center">
                                                     <h5 class="fw-bolder mb-3">{{ $produk->nama_produk }}</h5>
@@ -102,7 +100,6 @@
                                                     <h5>Rp. {{ number_format($produk->harga, 0, ',', '.') }},00</h5>
                                                 </div>
                                             </div>
-                                            <!-- Product actions-->
                                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                                 <div class="text-center"><button class="btn btn-outline-dark mt-auto"
                                                         data-toggle="modal" data-target="#addToCart{{ $produk->id }}"><i

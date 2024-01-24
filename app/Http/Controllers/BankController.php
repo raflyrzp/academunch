@@ -121,4 +121,46 @@ class BankController extends Controller
 
         return redirect()->route('bank.index')->with('error', 'Withdrawal ditolak');
     }
+
+    public function laporanTopupHarian()
+    {
+        $title = 'Laporan Top Up Harian';
+
+        $today = now()->toDateString();
+        $topups = TopUp::whereDate('created_at', $today)->get();
+        $totalNominal = $topups->sum('nominal');
+
+        return view('bank.laporan.topup-harian', compact('topups', 'totalNominal', 'title'));
+    }
+
+    public function laporanTopup()
+    {
+        $title = 'Laporan Top Up';
+
+        $topups = TopUp::all();
+        $totalNominal = $topups->sum('nominal');
+
+        return view('bank.laporan.topup', compact('topups', 'totalNominal', 'title'));
+    }
+
+    public function laporanWithdrawalHarian()
+    {
+        $title = 'Laporan Withdrawal Harian';
+
+        $today = now()->toDateString();
+        $withdrawals = Withdrawal::whereDate('created_at', $today)->get();
+        $totalNominal = $withdrawals->sum('nominal');
+
+        return view('bank.laporan.withdrawal-harian', compact('withdrawals', 'totalNominal', 'title'));
+    }
+
+    public function laporanWithdrawal()
+    {
+        $title = 'Laporan Withdrawal';
+
+        $withdrawals = Withdrawal::all();
+        $totalNominal = $withdrawals->sum('nominal');
+
+        return view('bank.laporan.withdrawal', compact('withdrawals', 'totalNominal', 'title'));
+    }
 }

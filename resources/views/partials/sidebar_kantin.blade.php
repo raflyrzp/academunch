@@ -19,6 +19,13 @@
                           <li class="{{ $title === 'Data Produk' ? 'active' : '' }}"><a
                                   href="{{ route('produk.index') }}"><i class="ti-package"></i> <span>Data
                                       Produk</span></a></li>
+                          <li>
+                              <a href="javascript:void(0)" aria-expanded="true"><i
+                                      class="ti-files"></i><span>Laporan</span></a>
+                              <ul class="collapse">
+                                  <li><a href="">Laporan Transaksi</a></li>
+                              </ul>
+                          </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>
                           </li>
 

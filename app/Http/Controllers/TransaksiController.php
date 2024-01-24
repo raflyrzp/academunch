@@ -106,32 +106,76 @@ class TransaksiController extends Controller
             return redirect()->route('customer.index')->with(['error' => 'Saldo anda tidak mencukupi.']);
         }
         $invoice = 'INV' . auth()->user()->id . now()->format('dmYHis');
+        session(['current_invoice' => $invoice]);
 
-        foreach ($selectedProducts as $product) {
+        foreach ($selectedProducts as $selectedProduct) {
             $transaksi = new Transaksi();
             $transaksi->id_user = $id_user;
-            $transaksi->id_produk = $product->id_produk;
-            $transaksi->harga = $product->produk->harga;
-            $transaksi->total_harga = $product->total_harga;
-            $transaksi->kuantitas = $product->jumlah_produk;
+            $transaksi->id_produk = $selectedProduct->id_produk;
+            $transaksi->harga = $selectedProduct->produk->harga;
+            $transaksi->total_harga = $selectedProduct->total_harga;
+            $transaksi->kuantitas = $selectedProduct->jumlah_produk;
             $transaksi->tgl_transaksi = now();
             $transaksi->invoice = $invoice;
             $transaksi->save();
 
-            $produk = Produk::find($product->id_produk);
-            $produk->stok -= $product->jumlah_produk;
+            $produk = Produk::find($selectedProduct->id_produk);
+            $produk->stok -= $selectedProduct->jumlah_produk;
             $produk->save();
 
-            $product->delete();
+            $selectedProduct->delete();
         }
 
         $userWallet->saldo -= $totalHarga;
         $userWallet->save();
-        // $transaksis = Transaksi::where('invoice', $invoice)->get();
 
         $title = 'Invoice';
         return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
+    }
 
-        // return redirect()->route('customer.index')->with(['success' => 'Berhasil melakukan pembelian!']);
+    public function cetakTransaksi()
+    {
+        $invoice = session('current_invoice');
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+        $totalHarga = $transaksis->sum('total_harga');
+
+        $selectedProducts = [];
+        foreach ($transaksis as $transaksi) {
+            $produk = Produk::find($transaksi->id_produk);
+
+            $selectedProducts[] = [
+                'produk' => $produk,
+                'nama_produk' => $produk->nama_produk,
+                'kuantitas' => $transaksi->kuantitas,
+                'total_harga' => $transaksi->total_harga,
+            ];
+        }
+
+        session()->forget('current_invoice');
+
+        return view('customer.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice'));
+    }
+
+    public function laporanTransaksiHarian()
+    {
+        $title = 'Laporan Transaksi Harian';
+
+        $today = now()->toDateString();
+        $transaksis = Transaksi::whereDate('tgl_transaksi', $today)->get();
+
+        $totalHarga = $transaksis->sum('total_harga');
+
+        return view('reports.daily-transaction', compact('transaksis', 'totalHarga', 'title'));
+    }
+
+    public function laporanTransaksi()
+    {
+        $title = 'Laporan Transaksi';
+
+        $transaksis = Transaksi::all();
+
+        $totalHarga = $transaksis->sum('total_harga');
+
+        return view('reports.daily-transaction', compact('transaksis', 'totalHarga', 'title'));
     }
 }

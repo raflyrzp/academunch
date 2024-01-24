@@ -68,7 +68,7 @@
                                     </div>
                                     <div class="col-md-6 text-md-right">
                                         <ul class="invoice-date">
-                                            <li>Tanggal : {{ now() }}</li>
+                                            <li>Tanggal : {{ now()->format('d F Y') }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -120,21 +120,12 @@
     <!-- main content area end -->
 
     <script>
-        document.getElementById('printInvoiceBtn').addEventListener('click', function() {
-            printInvoice();
+        document.addEventListener('DOMContentLoaded', function() {
+            var printBtn = document.getElementById('printInvoiceBtn');
+
+            printBtn.addEventListener('click', function() {
+                window.location.href = '{{ route('cetak.transaksi') }}';
+            });
         });
-
-        function printInvoice() {
-            var invoiceContent = document.querySelector('.invoice-area').innerHTML;
-
-            var printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Print Invoice</title></head><body>');
-            printWindow.document.write(invoiceContent);
-            printWindow.document.write('</body></html>');
-
-            printWindow.document.close();
-
-            printWindow.print();
-        }
     </script>
 @endsection

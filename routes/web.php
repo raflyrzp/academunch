@@ -25,7 +25,7 @@ Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/', [AuthController::class, 'login']);
 
 //Logout
-Route::get('/auth/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'userAkses:admin'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'adminIndex'])->name('admin.index');
@@ -38,6 +38,7 @@ Route::middleware(['auth', 'userAkses:kantin'])->group(function () {
 
     Route::resource('/kantin/produk', ProdukController::class);
     Route::resource('/kantin/kategori', KategoriController::class);
+    Route::get('/kantin/laporan', [TransaksiController::class, 'laporanTransaksi'])->name('kantin.laporan');
 });
 
 Route::middleware(['auth', 'userAkses:bank'])->group(function () {
@@ -67,4 +68,6 @@ Route::middleware(['auth', 'userAkses:customer'])->group(function () {
     Route::get('/customer/keranjang', [TransaksiController::class, 'keranjangIndex'])->name('customer.keranjang');
     Route::post('/customer/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
     Route::delete('/customer/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
+
+    Route::get('/customer/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
 });
