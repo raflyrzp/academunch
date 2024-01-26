@@ -36,9 +36,15 @@ Route::middleware(['auth', 'userAkses:admin'])->group(function () {
 Route::middleware(['auth', 'userAkses:kantin'])->group(function () {
     Route::get('/kantin', [DashboardController::class, 'kantinIndex'])->name('kantin.index');
 
+    // PRODUK
     Route::resource('/kantin/produk', ProdukController::class);
+
+    // KATEGORI
     Route::resource('/kantin/kategori', KategoriController::class);
-    Route::get('/kantin/laporan', [TransaksiController::class, 'laporanTransaksi'])->name('kantin.laporan');
+
+    //LAPORAN
+    Route::get('/kantin/laporan-harian', [TransaksiController::class, 'laporanTransaksiHarian'])->name('kantin.laporan');
+    Route::get('/kantin/laporan-harian/{tanggal}', [TransaksiController::class, 'laporanTransaksi'])->name('kantin.laporan.harian');
 });
 
 Route::middleware(['auth', 'userAkses:bank'])->group(function () {
@@ -53,21 +59,32 @@ Route::middleware(['auth', 'userAkses:bank'])->group(function () {
     Route::get('/bank/withdrawal', [BankController::class, 'bankWithdrawalIndex'])->name('bank.withdrawal');
     Route::put('/bank/konfirmasiWithdrawal/{id}', [BankController::class, 'konfirmasiWithdrawal'])->name('konfirmasi.withdrawal');
     Route::put('/bank/tolakWithdrawal/{id}', [BankController::class, 'tolakWithdrawal'])->name('tolak.withdrawal');
+
+    // LAPORAN
+    Route::get('/bank/laporan/topup', [BankController::class, 'laporanTopup'])->name('bank.laporan.topup');
+    Route::get('/bank/laporan/withdrawal', [BankController::class, 'laporanWithdrawal'])->name('bank.laporan.withdrawal');
 });
 
 Route::middleware(['auth', 'userAkses:customer'])->group(function () {
     Route::get('/customer', [DashboardController::class, 'customerIndex'])->name('customer.index');
 
-    // Route::get('/customer/topup', [BankController::class, 'topupIndex'])->name('topup.index');
-
+    // TOPUP
     Route::post('/customer/topup', [BankController::class, 'topup'])->name('topup.request');
+
+    // TARIK TUNAI
     Route::post('/customer/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');
 
+    // TRANSAKSI
     Route::get('/customer/kantin', [TransaksiController::class, 'customerKantinIndex'])->name('customer.kantin');
     Route::post('/customer/tambahKeKeranjang/{id}', [TransaksiController::class, 'addToCart'])->name('addToCart');
     Route::get('/customer/keranjang', [TransaksiController::class, 'keranjangIndex'])->name('customer.keranjang');
     Route::post('/customer/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
     Route::delete('/customer/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
-
     Route::get('/customer/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
+
+    //RIWAYAT
+    Route::get('/customer/riwayat/transaksi', [TransaksiController::class, 'riwayatTransaksi'])->name('customer.riwayat.transaksi');
+    Route::get('/customer/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('customer.transaksi.detail');
+    Route::get('/customer/riwayat/topup', [BankController::class, 'riwayatTopup'])->name('customer.riwayat.topup');
+    Route::get('/customer/riwayat/withdrawal', [BankController::class, 'riwayatWithdrawal'])->name('customer.riwayat.withdrawal');
 });

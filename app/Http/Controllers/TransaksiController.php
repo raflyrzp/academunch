@@ -158,24 +158,46 @@ class TransaksiController extends Controller
 
     public function laporanTransaksiHarian()
     {
-        $title = 'Laporan Transaksi Harian';
-
-        $today = now()->toDateString();
-        $transaksis = Transaksi::whereDate('tgl_transaksi', $today)->get();
-
-        $totalHarga = $transaksis->sum('total_harga');
-
-        return view('reports.daily-transaction', compact('transaksis', 'totalHarga', 'title'));
-    }
-
-    public function laporanTransaksi()
-    {
         $title = 'Laporan Transaksi';
 
-        $transaksis = Transaksi::all();
+        $transaksis = Transaksi::select(DB::raw('DATE(tgl_transaksi) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'asc')
+            ->get();
 
         $totalHarga = $transaksis->sum('total_harga');
 
-        return view('reports.daily-transaction', compact('transaksis', 'totalHarga', 'title'));
+        return view('kantin.laporan.transaksi_harian', compact('transaksis', 'totalHarga', 'title'));
+    }
+
+    public function laporanTransaksi($tanggal)
+    {
+        $title = 'Laporan Transaksi Harian';
+        $tanggal = date('Y-m-d', strtotime($tanggal));
+        $transaksis = Transaksi::where(DB::raw('DATE(tgl_transaksi)'), $tanggal)->get();
+        $totalHarga = $transaksis->sum('total_harga');
+
+        return view('kantin.laporan.transaksi', compact('transaksis', 'totalHarga', 'title'));
+    }
+
+    public function riwayatTransaksi()
+    {
+        $title = 'Riwayat Transaksi';
+        $transaksis = Transaksi::select('invoice', DB::raw('MAX(tgl_transaksi) as tgl_transaksi'), DB::raw('SUM(total_harga) as total_harga'))
+            ->where('id_user', auth()->id())
+            ->groupBy('invoice')
+            ->orderBy('invoice', 'desc')
+            ->get();
+
+        return view('customer.riwayat.transaksi', compact('transaksis', 'title'));
+    }
+
+    public function detailRiwayatTransaksi($invoice)
+    {
+        $title = 'Detail Pembelian';
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+        $totalHarga = $transaksis->sum('total_harga');
+
+        return view('customer.riwayat.detail_transaksi', compact('title', 'transaksis', 'totalHarga'));
     }
 }

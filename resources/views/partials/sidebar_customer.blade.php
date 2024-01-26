@@ -18,9 +18,17 @@
                           <li class="{{ $title === 'Keranjang' ? 'active' : '' }}"><a
                                   href="{{ route('customer.keranjang') }}"><i class="ti-shopping-cart"></i>
                                   <span>Keranjang</span></a></li>
+                          <li class="{{ $title === 'Riwayat Transaksi' ? 'active' : '' }}">
+                              <a href="javascript:void(0)" aria-expanded="true"><i
+                                      class="ti-files"></i><span>Riwayat</span></a>
+                              <ul class="collapse">
+                                  <li><a href="{{ route('customer.riwayat.transaksi') }}">Transaksi</a></li>
+                                  <li><a href="{{ route('customer.riwayat.topup') }}">Top Up</a></li>
+                                  <li><a href="{{ route('customer.riwayat.withdrawal') }}">Tarik Tunai</a></li>
+                              </ul>
+                          </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>
                           </li>
-
                       </ul>
                   </nav>
               </div>

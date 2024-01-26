@@ -3,7 +3,6 @@
           <div class="sidebar-header">
               <div class="logo">
                   <a href=""><img src="assets/images/icon/logo.png" alt="logo"></a>
-                  {{-- <a href="{{ route('admin.index') }}">Fintech App</a> --}}
               </div>
           </div>
           <div class="main-menu">
@@ -19,12 +18,10 @@
                           <li class="{{ $title === 'Data Produk' ? 'active' : '' }}"><a
                                   href="{{ route('produk.index') }}"><i class="ti-package"></i> <span>Data
                                       Produk</span></a></li>
-                          <li>
-                              <a href="javascript:void(0)" aria-expanded="true"><i
-                                      class="ti-files"></i><span>Laporan</span></a>
-                              <ul class="collapse">
-                                  <li><a href="">Laporan Transaksi</a></li>
-                              </ul>
+                          <li
+                              class="{{ $title === 'Laporan Transaksi Harian' || $title === 'Laporan Transaksi' ? 'active' : '' }}">
+                              <a href="{{ route('kantin.laporan') }}"><i class="ti-package"></i>
+                                  <span>Laporan</span></a>
                           </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>
                           </li>

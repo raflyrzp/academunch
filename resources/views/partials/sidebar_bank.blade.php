@@ -19,6 +19,15 @@
                                   href="{{ route('bank.withdrawal') }}"><i class="ti-archive"></i> <span>Tarik
                                       Tunai</span></a>
                           </li>
+
+                          <li class="{{ $title === 'Laporan Top Up' ? 'active' : '' }}">
+                              <a href="javascript:void(0)" aria-expanded="true"><i
+                                      class="ti-files"></i><span>Laporan</span></a>
+                              <ul class="collapse">
+                                  <li><a href="{{ route('bank.laporan.topup') }}">Top Up</a></li>
+                                  <li><a href="{{ route('bank.laporan.withdrawal') }}">Tarik Tunai</a></li>
+                              </ul>
+                          </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>
                           </li>
 

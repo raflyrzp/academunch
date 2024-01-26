@@ -59,7 +59,7 @@ class ProdukController extends Controller
                 'nama_produk' => $request->nama_produk,
                 'harga' => $request->harga,
                 'stok' => $request->stok,
-                'foto' => $foto->hashName() || 'default.png',
+                'foto' => $foto->hashName(),
                 'desc' => $request->desc,
                 'id_kategori' => $request->id_kategori
             ]);
@@ -115,21 +115,26 @@ class ProdukController extends Controller
             ]);
 
             $foto = $request->file('foto');
-            if ($produk->foto !== 'default.png') {
+            if ($produk->foto !== 'default.jpeg') {
                 Storage::delete('public/produk/' . $produk->foto);
             }
             $foto->storeAs('public/produk', $foto->hashName());
 
-            Storage::delete('public/produk/' . $produk->foto);
             $produk->foto = $foto->hashName();
+            $produk->nama_produk = $request->nama_produk;
+            $produk->id_kategori = $request->id_kategori;
+            $produk->harga = $request->harga;
+            $produk->stok = $request->stok;
+            $produk->desc = $request->desc;
+            $produk->save();
+        } else {
+            $produk->nama_produk = $request->nama_produk;
+            $produk->id_kategori = $request->id_kategori;
+            $produk->harga = $request->harga;
+            $produk->stok = $request->stok;
+            $produk->desc = $request->desc;
+            $produk->save();
         }
-
-        $produk->nama_produk = $request->nama_produk;
-        $produk->id_kategori = $request->id_kategori;
-        $produk->harga = $request->harga;
-        $produk->stok = $request->stok;
-        $produk->desc = $request->desc;
-        $produk->save();
 
         return redirect()->back()->with('success', 'Berhasil memgedit sebuah data produk.');
     }

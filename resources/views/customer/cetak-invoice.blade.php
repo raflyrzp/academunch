@@ -51,8 +51,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($selectedProducts as $selectedProduct)
+                                @foreach ($selectedProducts as $i => $selectedProduct)
                                     <tr>
+                                        <td>{{ $i + 1 }}</td>
                                         <td style="vertical-align: middle;">
                                             {{ $selectedProduct['nama_produk'] }}</td>
                                         <td style="vertical-align: middle;">

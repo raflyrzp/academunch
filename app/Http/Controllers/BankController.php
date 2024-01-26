@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\TopUp;
 use App\Models\Wallet;
 use App\Models\Withdrawal;
@@ -34,7 +35,7 @@ class BankController extends Controller
     public function topup(Request $request)
     {
         $request->validate([
-            'nominal' => 'required|integer|max:255',
+            'nominal' => 'required|integer',
             'rekening' => 'required|string|exists:wallets,rekening',
         ]);
 
@@ -122,15 +123,23 @@ class BankController extends Controller
         return redirect()->route('bank.index')->with('error', 'Withdrawal ditolak');
     }
 
-    public function laporanTopupHarian()
+    public function riwayatTopup()
     {
-        $title = 'Laporan Top Up Harian';
+        $title = 'Riwayat Top Up';
+        // $user = User::where('id', auth()->id())->first();
+        $wallet = Wallet::where('id_user', auth()->id())->first();
+        $topups = TopUp::where('rekening', $wallet->rekening)->get();
 
-        $today = now()->toDateString();
-        $topups = TopUp::whereDate('created_at', $today)->get();
-        $totalNominal = $topups->sum('nominal');
+        return view('customer.riwayat.topup', compact('topups', 'title'));
+    }
 
-        return view('bank.laporan.topup-harian', compact('topups', 'totalNominal', 'title'));
+    public function riwayatWithdrawal()
+    {
+        $title = 'Riwayat Tarik Tunai';
+        $wallet = Wallet::where('id_user', auth()->id())->first();
+        $withdrawals = Withdrawal::where('rekening', $wallet->rekening)->get();
+
+        return view('customer.riwayat.withdrawal', compact('withdrawals', 'title'));
     }
 
     public function laporanTopup()
@@ -138,29 +147,16 @@ class BankController extends Controller
         $title = 'Laporan Top Up';
 
         $topups = TopUp::all();
-        $totalNominal = $topups->sum('nominal');
 
-        return view('bank.laporan.topup', compact('topups', 'totalNominal', 'title'));
-    }
-
-    public function laporanWithdrawalHarian()
-    {
-        $title = 'Laporan Withdrawal Harian';
-
-        $today = now()->toDateString();
-        $withdrawals = Withdrawal::whereDate('created_at', $today)->get();
-        $totalNominal = $withdrawals->sum('nominal');
-
-        return view('bank.laporan.withdrawal-harian', compact('withdrawals', 'totalNominal', 'title'));
+        return view('bank.laporan.topup', compact('topups', 'title'));
     }
 
     public function laporanWithdrawal()
     {
-        $title = 'Laporan Withdrawal';
+        $title = 'Laporan Tarik Tunai';
 
         $withdrawals = Withdrawal::all();
-        $totalNominal = $withdrawals->sum('nominal');
 
-        return view('bank.laporan.withdrawal', compact('withdrawals', 'totalNominal', 'title'));
+        return view('bank.laporan.withdrawal', compact('withdrawals', 'title'));
     }
 }
