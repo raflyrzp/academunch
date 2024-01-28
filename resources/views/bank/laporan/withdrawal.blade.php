@@ -50,7 +50,7 @@
                     <div class="col-12 mt-5">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="header-title">Riwayat Tarik Tunai</h4>
+                                <h4 class="header-title">Laporan Tarik Tunai</h4>
                                 <div class="data-tables">
                                     <table id="table1" class="table table-bordered table-hover">
                                         <thead class="bg-light text-capitalize">
