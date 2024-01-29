@@ -55,7 +55,10 @@
                                         <h6 class="bg-body-tertiary p-2 border-top border-bottom">{{ $transaksi->tanggal }}
                                         </h6>
                                         @php
-                                            $transaksiList = App\Models\Transaksi::where(DB::raw('DATE(tgl_transaksi)'), $transaksi->tanggal)->get();
+                                            $transaksiList = App\Models\Transaksi::select('invoice', 'tgl_transaksi')
+                                                ->where(DB::raw('DATE(tgl_transaksi)'), $transaksi->tanggal)
+                                                ->groupBy('invoice', 'tgl_transaksi')
+                                                ->get();
                                         @endphp
 
                                         <ul class="list-group list-group-light mb-4">

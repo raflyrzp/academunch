@@ -89,7 +89,8 @@
         <!-- footer area start-->
         <footer>
             <div class="footer-area">
-                <p>© Copyright 2024. All right reserved. Template by <a href="https://colorlib.com/wp/">Colorlib</a>.
+                <p>© Copyright {{ now()->format('Y') }}. All right reserved. Made by <a
+                        href="https://instagram.com/rabbzp_">Rafly Rabbany Z.P.</a>
                 </p>
             </div>
         </footer>

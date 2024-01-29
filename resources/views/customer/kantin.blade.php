@@ -64,7 +64,9 @@
                                         <div class="fs-5 mb-5">
                                             <span>{{ $bestSeller->desc }}</span>
                                         </div>
-                                        <p class="lead mb-3">Rp. {{ number_format($bestSeller->harga, 0, ',', '.') }},00</p>
+                                        <p>Tersedia {{ $bestSeller->stok }} porsi</p>
+                                        <p class="lead mb-3">Rp. {{ number_format($bestSeller->harga, 0, ',', '.') }},00
+                                        </p>
                                         <div class="d-flex">
                                             <button class="btn btn-outline-dark flex-shrink-0" type="button"
                                                 data-toggle="modal" data-target='#addToCart{{ $bestSeller->id }}'>
@@ -93,10 +95,15 @@
                                             <img class="card-img-top" src="{{ asset('storage/produk/' . $produk->foto) }}"
                                                 alt="{{ $produk->nama_produk }}"
                                                 style="max-height: 15em; object-fit: cover;" />
+                                            <div
+                                                class="card-img-overlay text-white top-0 right-0 p-0 m-0 col-5 text-center">
+                                                <p class="text-white p-1" style="background-color: rgba(0, 0, 0, 0.7)">
+                                                    {{ $produk->kategori->nama_kategori }}</p>
+                                            </div>
                                             <div class="card-body p-4">
                                                 <div class="text-center">
                                                     <h5 class="fw-bolder mb-3">{{ $produk->nama_produk }}</h5>
-                                                    <p class="mb-3">{{ $produk->kategori->nama_kategori }}</p>
+                                                    <p class="mb-3">Tersedia : {{ $produk->stok }}</p>
                                                     <h5>Rp. {{ number_format($produk->harga, 0, ',', '.') }},00</h5>
                                                 </div>
                                             </div>
