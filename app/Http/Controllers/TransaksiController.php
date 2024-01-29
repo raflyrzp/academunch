@@ -162,7 +162,7 @@ class TransaksiController extends Controller
 
         $transaksis = Transaksi::select(DB::raw('DATE(tgl_transaksi) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
             ->groupBy('tanggal')
-            ->orderBy('tanggal', 'asc')
+            ->orderBy('tanggal', 'desc')
             ->get();
 
         $totalHarga = $transaksis->sum('total_harga');
@@ -170,11 +170,11 @@ class TransaksiController extends Controller
         return view('kantin.laporan.transaksi_harian', compact('transaksis', 'totalHarga', 'title'));
     }
 
-    public function laporanTransaksi($tanggal)
+    public function laporanTransaksi($invoice)
     {
-        $title = 'Laporan Transaksi Harian';
-        $tanggal = date('Y-m-d', strtotime($tanggal));
-        $transaksis = Transaksi::where(DB::raw('DATE(tgl_transaksi)'), $tanggal)->get();
+        $title = 'Detail Laporan Transaksi';
+        // $tanggal = date('Y-m-d', strtotime($tanggal));
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
         $totalHarga = $transaksis->sum('total_harga');
 
         return view('kantin.laporan.transaksi', compact('transaksis', 'totalHarga', 'title'));
@@ -183,10 +183,10 @@ class TransaksiController extends Controller
     public function riwayatTransaksi()
     {
         $title = 'Riwayat Transaksi';
-        $transaksis = Transaksi::select('invoice', DB::raw('MAX(tgl_transaksi) as tgl_transaksi'), DB::raw('SUM(total_harga) as total_harga'))
+        $transaksis = Transaksi::select(DB::raw('DATE(tgl_transaksi) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
             ->where('id_user', auth()->id())
-            ->groupBy('invoice')
-            ->orderBy('invoice', 'desc')
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
             ->get();
 
         return view('customer.riwayat.transaksi', compact('transaksis', 'title'));

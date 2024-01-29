@@ -126,7 +126,6 @@ class BankController extends Controller
     public function riwayatTopup()
     {
         $title = 'Riwayat Top Up';
-        // $user = User::where('id', auth()->id())->first();
         $wallet = Wallet::where('id_user', auth()->id())->first();
         $topups = TopUp::where('rekening', $wallet->rekening)->get();
 
