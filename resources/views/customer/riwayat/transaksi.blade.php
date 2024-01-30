@@ -52,13 +52,17 @@
                                 <h4 class="header-title">Riwayat Transaksi</h4>
                                 <div class="list-group list-group-flush">
                                     @foreach ($transaksis as $transaksi)
-                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">{{ $transaksi->tanggal }}
+                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">
+                                            {{ $transaksi->tanggal }}
+                                            <span class="float-right">Rp.
+                                                {{ number_format($transaksi->total_harga, 2, ',', '.') }}</span>
                                         </h6>
                                         @php
                                             $transaksiList = App\Models\Transaksi::select('invoice', 'tgl_transaksi')
                                                 ->where(DB::raw('DATE(tgl_transaksi)'), $transaksi->tanggal)
                                                 ->where('id_user', auth()->id())
                                                 ->groupBy('invoice', 'tgl_transaksi')
+                                                ->orderBy('tgl_transaksi', 'desc')
                                                 ->get();
                                         @endphp
 

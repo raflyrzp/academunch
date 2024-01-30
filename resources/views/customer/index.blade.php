@@ -57,13 +57,18 @@
                                         </div>
                                         <h2>Rp. {{ number_format($wallet->saldo, 0, ',', '.') }},00</h2>
                                     </div>
-                                    <div class="float-right">
-                                        <button type="button" class="btn btn-light my-3 mr-3" data-toggle="modal"
-                                            data-target="#topupModal"><i class="ti-plus"></i> Top
-                                            Up</button>
+                                    <div>
+                                        <div class="float-right">
+                                            <button type="button" class="btn btn-light my-3 mr-3 float-right"
+                                                data-toggle="modal" data-target="#topupModal"><i class="ti-plus"></i> Top
+                                                Up</button>
 
-                                        <button type="button" class="btn btn-light my-3 mr-3" data-toggle="modal"
-                                            data-target="#tariktunaiModal"><i class="ti-archive"></i> Tarik Tunai</button>
+                                            <button type="button" class="btn btn-light my-3 mr-3 float-right"
+                                                data-toggle="modal" data-target="#tariktunaiModal"><i
+                                                    class="ti-archive"></i> Tarik
+                                                Tunai</button>
+                                        </div>
+
                                     </div>
                                     {{-- <canvas id="seolinechart1" height="50"></canvas> --}}
                                 </div>
@@ -71,15 +76,26 @@
                         </div>
                         {{-- <div class="col-md-5 mt-5 mb-3">
                             <div class="card">
-                                <div class="seo-fact sbg2">
+                                <div class="seo-fact sbg3">
                                     <div class="p-4 d-flex justify-content-between align-items-center mb-3">
                                         <div class="seofct-icon">
-                                            <h2><i class="ti-wallet"></i>
-                                                Rekening</h2>
+                                            <h2><i class="ti-upload"></i>
+                                                Pengeluaran</h2>
                                         </div>
                                     </div>
-                                    <div class="ml-4 my-3 center">
+                                    <div class="ml-4 mb-3 mt-4 center">
+                                        <h2>Rp. {{ number_format($pengeluaran, 2, ',', '.') }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 mb-3 mb-lg-0">
+                            <div class="card">
+                                <div class="seo-fact sbg2">
+                                    <div class="p-4 d-flex justify-content-between align-items-center">
+                                        <div class="seofct-icon">Rekening</div>
                                         <h2>{{ $wallet->rekening }}</h2>
+                                        <canvas id="seolinechart3" height="60"></canvas>
                                     </div>
                                 </div>
                             </div>

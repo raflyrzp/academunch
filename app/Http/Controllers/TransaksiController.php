@@ -31,6 +31,7 @@ class TransaksiController extends Controller
         $title = 'Keranjang';
         $id_user = Auth::id();
         $keranjangs = Keranjang::where('id_user', $id_user)->get();
+        $wallet = Wallet::where('id_user', auth()->id())->first();
 
         $totalHarga = 0;
 
@@ -39,7 +40,7 @@ class TransaksiController extends Controller
             $totalHarga += $totalHargaPerItem;
         }
 
-        return view('customer.keranjang', compact('title', 'keranjangs', 'totalHarga'));
+        return view('customer.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
     }
 
     public function addToCart(Request $request)
@@ -195,9 +196,11 @@ class TransaksiController extends Controller
     public function detailRiwayatTransaksi($invoice)
     {
         $title = 'Detail Pembelian';
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-        $totalHarga = $transaksis->sum('total_harga');
 
-        return view('customer.riwayat.detail_transaksi', compact('title', 'transaksis', 'totalHarga'));
+        $selectedProducts = Transaksi::where('invoice', $invoice)->get();
+        $totalHarga = $selectedProducts->sum('total_harga');
+        session(['current_invoice' => $invoice]);
+
+        return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title'));
     }
 }

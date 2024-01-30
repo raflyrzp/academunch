@@ -51,7 +51,7 @@
                                 <div class="invoice-head">
                                     <div class="row">
                                         <div class="iv-left col-6">
-                                            <span>CHECKOUT</span>
+                                            <span>ACADEMUNCH</span>
                                         </div>
                                         <div class="iv-right col-6 text-md-right">
                                             <span>{{ $invoice }}</span>
@@ -61,7 +61,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
                                         <div class="invoice-address">
-                                            <h3>Checkout</h3>
+                                            <h3>Invoice</h3>
                                             <h5>{{ auth()->user()->nama }}</h5>
                                             <p>{{ auth()->user()->email }}</p>
                                         </div>
@@ -91,7 +91,11 @@
                                                         Rp.{{ number_format($selectedProduct->produk->harga, 0, ',', '.') }},00
                                                     </td>
                                                     <td style="vertical-align: middle;">
-                                                        {{ $selectedProduct->jumlah_produk }}
+                                                        @if ($selectedProduct->jumlah_produk !== null)
+                                                            {{ $selectedProduct->jumlah_produk }}
+                                                        @else
+                                                            {{ $selectedProduct->kuantitas }}
+                                                        @endif
                                                     </td>
                                                     <td style="vertical-align: middle;">
                                                         Rp.{{ number_format($selectedProduct->total_harga, 0, ',', '.') }},00
@@ -108,8 +112,13 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="invoice-buttons text-right">
-                                <a href="#" class="invoice-btn" id="printInvoiceBtn">Cetak Invoice</a>
+                            <div class="invoice-buttons">
+                                <div class="float-left">
+                                    <a href="{{ url()->previous() }}">Kembali</a>
+                                </div>
+                                <div class="float-right">
+                                    <a href="#" class="invoice-btn" id="printInvoiceBtn">Cetak Invoice</a>
+                                </div>
                             </div>
                         </div>
                     </div>

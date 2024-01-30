@@ -20,7 +20,7 @@
                                       Produk</span></a></li>
                           <li
                               class="{{ $title === 'Laporan Transaksi Harian' || $title === 'Laporan Transaksi' ? 'active' : '' }}">
-                              <a href="{{ route('kantin.laporan') }}"><i class="ti-package"></i>
+                              <a href="{{ route('kantin.laporan') }}"><i class="ti-file"></i>
                                   <span>Laporan</span></a>
                           </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>

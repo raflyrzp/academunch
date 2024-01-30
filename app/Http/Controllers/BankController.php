@@ -7,6 +7,7 @@ use App\Models\TopUp;
 use App\Models\Wallet;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -127,9 +128,13 @@ class BankController extends Controller
     {
         $title = 'Riwayat Top Up';
         $wallet = Wallet::where('id_user', auth()->id())->first();
-        $topups = TopUp::where('rekening', $wallet->rekening)->get();
+        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->where('rekening', $wallet->rekening)
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
-        return view('customer.riwayat.topup', compact('topups', 'title'));
+        return view('customer.riwayat.topup', compact('topups', 'title', 'wallet'));
     }
 
     public function riwayatWithdrawal()

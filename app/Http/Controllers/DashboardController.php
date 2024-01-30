@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\TopUp;
 use App\Models\Produk;
 use App\Models\Wallet;
+use App\Models\Transaksi;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,9 @@ class DashboardController extends Controller
     {
         $title = 'Dashboard';
         $produks = Produk::all();
-        return view('kantin.index', compact('title', 'produks'));
+        $pemasukan = Transaksi::all()->sum('total_harga');
+        $pemasukanHariIni = Transaksi::whereDate('tgl_transaksi', today())->sum('total_harga');
+        return view('kantin.index', compact('title', 'produks', 'pemasukan', 'pemasukanHariIni'));
     }
 
     public function bankIndex()
@@ -33,13 +36,16 @@ class DashboardController extends Controller
         $wallets = Wallet::all();
         $requestTopups = TopUp::where('status', 'menunggu')->get();
         $requestWithdrawals = Withdrawal::where('status', 'menunggu')->get();
-        return view('bank.index', compact('title', 'customers', 'wallets', 'requestTopups', 'requestWithdrawals'));
+        $dataTopup = TopUp::all()->count();
+        $dataWithdrawal = Withdrawal::all()->count();
+        return view('bank.index', compact('title', 'customers', 'wallets', 'requestTopups', 'requestWithdrawals', 'dataTopup', 'dataWithdrawal'));
     }
 
     public function customerIndex()
     {
         $title = 'Dashboard';
         $wallet = Wallet::where('id_user', auth()->user()->id)->first();
-        return view('customer.index', compact('title', 'wallet'));
+        $pengeluaran = Transaksi::where('id_user', auth()->id())->sum('total_harga');
+        return view('customer.index', compact('title', 'wallet', 'pengeluaran'));
     }
 }

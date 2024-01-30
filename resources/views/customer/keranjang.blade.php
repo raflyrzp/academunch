@@ -111,7 +111,11 @@
                             <div class="text-right mt-3">
                                 <form action="{{ route('checkout') }}" method="post">
                                     @csrf
-                                    <button type="submit" class="btn btn-dark col-2">Beli</button>
+                                    @if ($totalHarga > $wallet->saldo)
+                                        <button type="submit" class="btn btn-dark col-2 btn-flat">Beli</button>
+                                    @else
+                                        <button type="submit" class="btn btn-dark col-2">Beli</button>
+                                    @endif
                                 </form>
                             </div>
                         </div>
