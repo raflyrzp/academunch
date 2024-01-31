@@ -33,12 +33,12 @@ class TransaksiController extends Controller
         $keranjangs = Keranjang::where('id_user', $id_user)->get();
         $wallet = Wallet::where('id_user', auth()->id())->first();
 
-        $totalHarga = 0;
+        $totalHarga = $keranjangs->sum('total_harga');
 
-        foreach ($keranjangs as $keranjang) {
-            $totalHargaPerItem = $keranjang->produk->harga * $keranjang->jumlah_produk;
-            $totalHarga += $totalHargaPerItem;
-        }
+        // foreach ($keranjangs as $keranjang) {
+        //     $totalHargaPerItem = $keranjang->produk->harga * $keranjang->jumlah_produk;
+        //     $totalHarga += $totalHargaPerItem;
+        // }
 
         return view('siswa.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
     }
@@ -228,9 +228,11 @@ class TransaksiController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
+        $totalHargaPerHari = Transaksi::whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
+
         $totalHarga = $transaksis->sum('total_harga');
 
-        return view('kantin.laporan.transaksi_harian', compact('transaksis', 'totalHarga', 'title'));
+        return view('kantin.laporan.transaksi_harian', compact('transaksis', 'totalHarga', 'title', 'totalHargaPerHari'));
     }
 
     public function laporanTransaksi($invoice)
@@ -252,7 +254,9 @@ class TransaksiController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('siswa.riwayat.transaksi', compact('transaksis', 'title'));
+        $totalHargaPerHari = Transaksi::where('id_user', auth()->id())->whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
+
+        return view('siswa.riwayat.transaksi', compact('transaksis', 'title', 'totalHargaPerHari'));
     }
 
     public function detailRiwayatTransaksi($invoice)

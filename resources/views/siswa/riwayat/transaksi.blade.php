@@ -55,7 +55,7 @@
                                         <h6 class="bg-body-tertiary p-2 border-top border-bottom">
                                             {{ $transaksi->tanggal }}
                                             <span class="float-right">Rp.
-                                                {{ number_format($transaksi->total_harga, 2, ',', '.') }}</span>
+                                                {{ number_format($totalHargaPerHari, 2, ',', '.') }}</span>
                                         </h6>
                                         @php
                                             $transaksiList = App\Models\Transaksi::select('invoice', 'created_at', 'status')

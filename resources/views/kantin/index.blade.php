@@ -111,7 +111,9 @@
                                                             </li>
                                                         @endforeach
                                                     </td>
-                                                    <td>{{ $groupedTransaksi->total_harga }}</td>
+                                                    <td>Rp.
+                                                        {{ number_format($groupedTransaksi->total_harga, 2, ',', '.') }}
+                                                    </td>
                                                     <td>{{ $firstTransaksi->status }}</td>
                                                     <td class="col-2">
                                                         @if ($firstTransaksi->status === 'dipesan')

@@ -64,7 +64,7 @@
                                         <div class="fs-5 mb-5">
                                             <span>{{ $bestSeller->desc }}</span>
                                         </div>
-                                        <p>Tersedia {{ $bestSeller->stok }} porsi</p>
+                                        <p>Tersedia : {{ $bestSeller->stok }}</p>
                                         <p class="lead mb-3">Rp. {{ number_format($bestSeller->harga, 0, ',', '.') }},00
                                         </p>
                                         <div class="d-flex">

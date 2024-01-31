@@ -65,7 +65,7 @@
                                             <h5>{{ auth()->user()->nama }}</h5>
                                             <p>{{ auth()->user()->email }}</p>
                                             <p>Status :
-                                                {{ $selectedProducts->first()->status === '' ? strtoupper($selectedProducts->first()->status) : 'DIPESAN' }}
+                                                {{ $selectedProducts->first()->status !== null ? strtoupper($selectedProducts->first()->status) : 'DIPESAN' }}
                                             </p>
                                         </div>
                                     </div>
@@ -136,6 +136,10 @@
                                 </div>
                             </div>
                         </div>
+                        @if ($selectedProducts->first()->status === null)
+                            <p class="ml-4 mb-3">Silahkan pergi ke halaman Riwayat Transaksi jika ingin membatalkan
+                                transaksi</p>
+                        @endif
                     </div>
                 </div>
             </div>
