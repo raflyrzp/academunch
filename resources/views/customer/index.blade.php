@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -47,7 +47,7 @@
                 <!-- seo fact area start -->
                 <div class="col-lg-12">
                     <div class="row">
-                        <div class="col-md-7 mt-5 mb-3">
+                        <div class="col-lg-7 col-sm-12 mt-5 mb-3">
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between align-items-center mb-3">
@@ -57,33 +57,29 @@
                                         </div>
                                         <h2>Rp. {{ number_format($wallet->saldo, 0, ',', '.') }},00</h2>
                                     </div>
-                                    <div>
-                                        <div class="float-right">
-                                            <button type="button" class="btn btn-light my-3 mr-3 float-right"
-                                                data-toggle="modal" data-target="#topupModal"><i class="ti-plus"></i> Top
-                                                Up</button>
+                                    <div class="float-right">
+                                        <button type="button" class="btn btn-light my-3 mr-3 float-right"
+                                            data-toggle="modal" data-target="#topupModal"><i class="ti-plus"></i> Top
+                                            Up</button>
 
-                                            <button type="button" class="btn btn-light my-3 mr-3 float-right"
-                                                data-toggle="modal" data-target="#tariktunaiModal"><i
-                                                    class="ti-archive"></i> Tarik
-                                                Tunai</button>
-                                        </div>
-
+                                        <button type="button" class="btn btn-light my-3 mr-3 float-right"
+                                            data-toggle="modal" data-target="#tariktunaiModal"><i class="ti-archive"></i>
+                                            Tarik
+                                            Tunai</button>
                                     </div>
-                                    {{-- <canvas id="seolinechart1" height="50"></canvas> --}}
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-md-5 mt-5 mb-3">
+                        <div class="col-md-5 mt-5 mb-3">
                             <div class="card">
-                                <div class="seo-fact sbg3">
+                                <div class="seo-fact sbg3" style="min-height: 13.5em">
                                     <div class="p-4 d-flex justify-content-between align-items-center mb-3">
                                         <div class="seofct-icon">
                                             <h2><i class="ti-upload"></i>
                                                 Pengeluaran</h2>
                                         </div>
                                     </div>
-                                    <div class="ml-4 mb-3 mt-4 center">
+                                    <div class="ml-4 mt-4 center">
                                         <h2>Rp. {{ number_format($pengeluaran, 2, ',', '.') }}</h2>
                                     </div>
                                 </div>
@@ -91,15 +87,15 @@
                         </div>
                         <div class="col-md-7 mb-3 mb-lg-0">
                             <div class="card">
-                                <div class="seo-fact sbg2">
+                                <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between align-items-center">
                                         <div class="seofct-icon">Rekening</div>
-                                        <h2>{{ $wallet->rekening }}</h2>
-                                        <canvas id="seolinechart3" height="60"></canvas>
+                                        <h2>
+                                            {{ implode(' ', str_split(str_replace(',', '', $wallet->rekening), 4)) }}</h2>
                                     </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,7 +105,7 @@
 
     <div class="modal fade" id="topupModal" tabindex="-1" role="dialog" aria-labelledby="topupModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="topupModalLabel">Top Up</h4>
@@ -150,7 +146,7 @@
 
     <div class="modal fade" id="tariktunaiModal" tabindex="-1" role="dialog" aria-labelledby="tariktunaiModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="tariktunaiModalLabel">Tarik Tunai</h4>

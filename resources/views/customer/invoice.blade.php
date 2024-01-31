@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -64,6 +64,9 @@
                                             <h3>Invoice</h3>
                                             <h5>{{ auth()->user()->nama }}</h5>
                                             <p>{{ auth()->user()->email }}</p>
+                                            <p>Status :
+                                                {{ $selectedProducts->first()->status === '' ? strtoupper($selectedProducts->first()->status) : 'DIPESAN' }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-md-right">
@@ -114,9 +117,21 @@
                             </div>
                             <div class="invoice-buttons">
                                 <div class="float-left">
-                                    <a href="{{ url()->previous() }}">Kembali</a>
+                                    <a href="javascript:history.back()">Kembali</a>
+
                                 </div>
                                 <div class="float-right">
+                                    @if ($selectedProducts->first()->status === 'dipesan')
+                                        <form action="{{ route('batal.transaksi', $invoice) }}" method="post"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <a href="" class="invoice-btn bg-danger">
+                                                <button type="submit"
+                                                    class="border-0 bg-transparent text-white font-weight-bold">Batal
+                                                </button></a>
+                                        </form>
+                                    @endif
                                     <a href="#" class="invoice-btn" id="printInvoiceBtn">Cetak Invoice</a>
                                 </div>
                             </div>

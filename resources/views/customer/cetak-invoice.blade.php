@@ -35,6 +35,9 @@
                                 </li>
                                 <li class="text-muted">{{ now()->format('d F Y') }}</li>
                                 <li class="text-muted">{{ $invoice }}</li>
+                                <li class="text-muted">Status : {{ strtoupper($status) }}
+                                </li>
+
                             </ul>
                         </div>
                     </div>

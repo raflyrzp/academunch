@@ -116,7 +116,6 @@ class TransaksiController extends Controller
             $transaksi->harga = $selectedProduct->produk->harga;
             $transaksi->total_harga = $selectedProduct->total_harga;
             $transaksi->kuantitas = $selectedProduct->jumlah_produk;
-            $transaksi->tgl_transaksi = now();
             $transaksi->invoice = $invoice;
             $transaksi->save();
 
@@ -134,11 +133,74 @@ class TransaksiController extends Controller
         return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
     }
 
+    public function konfirmasiTransaksi($invoice)
+    {
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+
+        foreach ($transaksis as $transaksi) {
+            $transaksi->status = 'dikonfirmasi';
+            $transaksi->save();
+        }
+
+        return redirect()->back()->with('success', 'Transaksi dikonfirmasi');
+    }
+
+    public function tolakTransaksi($invoice)
+    {
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+
+        foreach ($transaksis as $transaksi) {
+            $produks = Produk::where('id', $transaksi->id_produk)->get();
+            foreach ($produks as $produk) {
+                $produk->stok += $transaksi->kuantitas;
+                $produk->save();
+            }
+
+            $transaksi->status = 'ditolak';
+            $transaksi->save();
+        }
+        $totalHarga = $transaksis->sum('total_harga');
+
+        $wallet = Wallet::where('id_user', $transaksi->id_user)->first();
+        $wallet->saldo += $totalHarga;
+        $wallet->save();
+
+        return redirect()->back()->with('success', 'Transaksi ditolak');
+    }
+
+    public function batalTransaksi($invoice)
+    {
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+
+        foreach ($transaksis as $transaksi) {
+            if ($transaksi->status === 'dikonfirmasi') {
+                return redirect()->back()->with('error', 'Transaksi sudah dikonfirmasi.');
+            } else {
+                $produks = Produk::where('id', $transaksi->id_produk)->get();
+                foreach ($produks as $produk) {
+                    $produk->stok += $transaksi->kuantitas;
+                    $produk->save();
+                }
+
+                $transaksi->status = 'batal';
+                $transaksi->save();
+            }
+        }
+        $totalHarga = $transaksis->sum('total_harga');
+
+        $wallet = Wallet::where('id_user', $transaksi->id_user)->first();
+        $wallet->saldo += $totalHarga;
+        $wallet->save();
+
+        return redirect()->back()->with('success', 'Transaksi dibatalkan');
+    }
+
     public function cetakTransaksi()
     {
         $invoice = session('current_invoice');
         $transaksis = Transaksi::where('invoice', $invoice)->get();
         $totalHarga = $transaksis->sum('total_harga');
+        $status = $transaksis->first()->status;
 
         $selectedProducts = [];
         foreach ($transaksis as $transaksi) {
@@ -154,14 +216,14 @@ class TransaksiController extends Controller
 
         session()->forget('current_invoice');
 
-        return view('customer.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice'));
+        return view('customer.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status'));
     }
 
     public function laporanTransaksiHarian()
     {
         $title = 'Laporan Transaksi';
 
-        $transaksis = Transaksi::select(DB::raw('DATE(tgl_transaksi) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
+        $transaksis = Transaksi::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
             ->groupBy('tanggal')
             ->orderBy('tanggal', 'desc')
             ->get();
@@ -184,7 +246,7 @@ class TransaksiController extends Controller
     public function riwayatTransaksi()
     {
         $title = 'Riwayat Transaksi';
-        $transaksis = Transaksi::select(DB::raw('DATE(tgl_transaksi) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
+        $transaksis = Transaksi::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
             ->where('id_user', auth()->id())
             ->groupBy('tanggal')
             ->orderBy('tanggal', 'desc')

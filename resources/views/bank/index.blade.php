@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -110,16 +110,16 @@
                                                                 method="post" style="display: inline;">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <button type="submit"
-                                                                    class="btn btn-primary btn-sm">Konfirmasi</button>
+                                                                <button type="submit" class="btn btn-primary btn-sm"><i
+                                                                        class="ti-check"></i></button>
                                                             </form>
 
                                                             <form action="{{ route('tolak.topup', $topup->id) }}"
                                                                 method="post" style="display: inline;">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-sm">Tolak</button>
+                                                                <button type="submit" class="btn btn-danger btn-sm"><i
+                                                                        class="ti-close"></i></button>
                                                             </form>
                                                         @elseif($topup->status === 'dikonfirmasi')
                                                             <button type="submit"
@@ -173,16 +173,16 @@
                                                                 method="post" style="display: inline;">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <button type="submit"
-                                                                    class="btn btn-primary btn-sm">Konfirmasi</button>
+                                                                <button type="submit" class="btn btn-primary btn-sm"><i
+                                                                        class="ti-check"></i></button>
                                                             </form>
 
                                                             <form action="{{ route('tolak.withdrawal', $withdrawal->id) }}"
                                                                 method="post" style="display: inline;">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-sm">Tolak</button>
+                                                                <button type="submit" class="btn btn-danger btn-sm"><i
+                                                                        class="ti-close"></i></button>
                                                             </form>
                                                         @elseif($withdrawal->status === 'dikonfirmasi')
                                                             <button type="submit"

@@ -100,25 +100,25 @@ class DatabaseSeeder extends Seeder
             [
                 'rekening' => '641234567890',
                 'id_user' => 1,
-                'saldo' => 100000,
+                'saldo' => 1000000,
                 'status' => 'aktif'
             ],
             [
                 'rekening' => '640987654321',
                 'id_user' => 2,
-                'saldo' => 100000,
+                'saldo' => 1000000,
                 'status' => 'aktif'
             ],
             [
                 'rekening' => '641212343456',
                 'id_user' => 3,
-                'saldo' => 100000,
+                'saldo' => 1000000,
                 'status' => 'aktif'
             ],
             [
                 'rekening' => '640909878765',
                 'id_user' => 4,
-                'saldo' => 100000,
+                'saldo' => 1000000,
                 'status' => 'aktif'
             ],
         ];

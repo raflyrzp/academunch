@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -58,9 +58,10 @@
                                                 {{ number_format($transaksi->total_harga, 2, ',', '.') }}</span>
                                         </h6>
                                         @php
-                                            $transaksiList = App\Models\Transaksi::select('invoice', 'tgl_transaksi')
-                                                ->where(DB::raw('DATE(tgl_transaksi)'), $transaksi->tanggal)
-                                                ->groupBy('invoice', 'tgl_transaksi')
+                                            $transaksiList = App\Models\Transaksi::select('invoice', 'created_at', 'status')
+                                                ->where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
+                                                ->groupBy('invoice', 'created_at', 'status')
+                                                ->orderBy('invoice', 'desc')
                                                 ->get();
                                         @endphp
 
@@ -72,12 +73,27 @@
                                                 <a href="{{ route('kantin.laporan.harian', $list->invoice) }}">
                                                     <li
                                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="ms-3">
-                                                                <p class="fw-bold mb-1">{{ $list->invoice }}</p>
+                                                        <div class="d-flex align-items-center col-12">
+                                                            <div class="col-12">
+                                                                <p class="fw-bold mb-1">{{ $list->invoice }} <span
+                                                                        class="float-right">{{ $list->created_at }}</span>
+                                                                </p>
                                                                 <p class="text-muted mb-0">Rp.
                                                                     {{ number_format($totalHarga, 2, ',', '.') }}
                                                                 </p>
+                                                                @if ($list->status == 'dipesan')
+                                                                    <p class="text-info">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @elseif($list->status == 'dikonfirmasi')
+                                                                    <p class="text-success">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @else
+                                                                    <p class="text-danger">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </li>

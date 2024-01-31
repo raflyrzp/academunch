@@ -16,11 +16,10 @@ return new class extends Migration
             $table->string('invoice');
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_produk');
-            // $table->enum('status', ['dipesan', 'dikonfirmasi', 'ditolak', 'batal']);
+            $table->enum('status', ['dipesan', 'dikonfirmasi', 'ditolak', 'batal']);
             $table->double('harga', 5);
             $table->integer('kuantitas');
             $table->double('total_harga', 5);
-            $table->timestamp('tgl_transaksi');
             $table->timestamps();
         });
     }

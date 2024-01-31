@@ -1,9 +1,9 @@
       <!-- sidebar menu area start -->
       <div class="sidebar-menu">
           <div class="sidebar-header">
-              <div class="logo">
-                  <a href=""><img src="assets/images/icon/logo.png" alt="logo"></a>
-              </div>
+              <a href="{{ route('kantin.index') }}" class="text-center">
+                  <h2 class="text-white text-center" style="font-size: 1.5rem">Academunch</h2>
+              </a>
           </div>
           <div class="main-menu">
               <div class="menu-inner">
@@ -20,7 +20,7 @@
                                       Produk</span></a></li>
                           <li
                               class="{{ $title === 'Laporan Transaksi Harian' || $title === 'Laporan Transaksi' ? 'active' : '' }}">
-                              <a href="{{ route('kantin.laporan') }}"><i class="ti-file"></i>
+                              <a href="{{ route('kantin.laporan') }}"><i class="ti-files"></i>
                                   <span>Laporan</span></a>
                           </li>
                           <li><a href="{{ route('logout') }}"><i class="ti-shift-left-alt"></i> <span>Logout</span></a>

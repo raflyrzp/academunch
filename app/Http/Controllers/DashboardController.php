@@ -9,6 +9,7 @@ use App\Models\Wallet;
 use App\Models\Transaksi;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
@@ -24,9 +25,15 @@ class DashboardController extends Controller
     {
         $title = 'Dashboard';
         $produks = Produk::all();
-        $pemasukan = Transaksi::all()->sum('total_harga');
-        $pemasukanHariIni = Transaksi::whereDate('tgl_transaksi', today())->sum('total_harga');
-        return view('kantin.index', compact('title', 'produks', 'pemasukan', 'pemasukanHariIni'));
+        $pemasukan = Transaksi::all()->whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
+        $pemasukanHariIni = Transaksi::whereDate('created_at', today())->whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
+        $transaksis = Transaksi::select('invoice', DB::raw('SUM(total_harga) as total_harga'))
+            ->where('status', 'dipesan')
+            ->groupBy('invoice')
+            ->orderBy('invoice', 'desc')
+            ->get();
+
+        return view('kantin.index', compact('title', 'produks', 'pemasukan', 'pemasukanHariIni', 'transaksis'));
     }
 
     public function bankIndex()
@@ -45,7 +52,10 @@ class DashboardController extends Controller
     {
         $title = 'Dashboard';
         $wallet = Wallet::where('id_user', auth()->user()->id)->first();
-        $pengeluaran = Transaksi::where('id_user', auth()->id())->sum('total_harga');
-        return view('customer.index', compact('title', 'wallet', 'pengeluaran'));
+        $pengeluaran = Transaksi::where('id_user', auth()->id())
+            ->whereIn('status', ['dipesan', 'dikonfirmasi'])
+            ->sum('total_harga');
+        $transaksis = Transaksi::where('id_user', auth()->id())->get();
+        return view('customer.index', compact('title', 'wallet', 'pengeluaran', 'transaksis'));
     }
 }

@@ -141,9 +141,13 @@ class BankController extends Controller
     {
         $title = 'Riwayat Tarik Tunai';
         $wallet = Wallet::where('id_user', auth()->id())->first();
-        $withdrawals = Withdrawal::where('rekening', $wallet->rekening)->get();
+        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->where('rekening', $wallet->rekening)
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
-        return view('customer.riwayat.withdrawal', compact('withdrawals', 'title'));
+        return view('customer.riwayat.withdrawal', compact('withdrawals', 'title', 'wallet'));
     }
 
     public function laporanTopup()

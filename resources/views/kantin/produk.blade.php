@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>

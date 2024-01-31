@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -125,7 +125,7 @@
         @foreach ($produks as $produk)
             <div class="modal fade" id="addToCart{{ $produk->id }}" tabindex="-1" role="dialog"
                 aria-labelledby="addToCartModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="addToCartModalLabel">Tambah ke Keranjang</h4>

@@ -42,6 +42,10 @@ Route::middleware(['auth', 'userAkses:kantin'])->group(function () {
     // KATEGORI
     Route::resource('/kantin/kategori', KategoriController::class);
 
+    // TRANSAKSI
+    Route::put('/kantin/konfirmasiTransaksi/{id}', [TransaksiController::class, 'konfirmasiTransaksi'])->name('konfirmasi.transaksi');
+    Route::put('/kantin/tolakTransaksi/{id}', [TransaksiController::class, 'tolakTransaksi'])->name('tolak.transaksi');
+
     //LAPORAN
     Route::get('/kantin/laporan-harian', [TransaksiController::class, 'laporanTransaksiHarian'])->name('kantin.laporan');
     Route::get('/kantin/laporan-harian/{tanggal}', [TransaksiController::class, 'laporanTransaksi'])->name('kantin.laporan.harian');
@@ -81,6 +85,7 @@ Route::middleware(['auth', 'userAkses:customer'])->group(function () {
     Route::post('/customer/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
     Route::delete('/customer/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
     Route::get('/customer/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
+    Route::put('/customer/batalTransaksi/{invoice}', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
 
     //RIWAYAT
     Route::get('/customer/riwayat/transaksi', [TransaksiController::class, 'riwayatTransaksi'])->name('customer.riwayat.transaksi');

@@ -24,7 +24,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">{{ $title }}</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="{{ route(auth()->user()->role . '.index') }}">Home</a></li>
                             <li><span>{{ $title }}</span></li>
                         </ul>
                     </div>
@@ -58,11 +58,11 @@
                                                 {{ number_format($transaksi->total_harga, 2, ',', '.') }}</span>
                                         </h6>
                                         @php
-                                            $transaksiList = App\Models\Transaksi::select('invoice', 'tgl_transaksi')
-                                                ->where(DB::raw('DATE(tgl_transaksi)'), $transaksi->tanggal)
+                                            $transaksiList = App\Models\Transaksi::select('invoice', 'created_at', 'status')
+                                                ->where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
                                                 ->where('id_user', auth()->id())
-                                                ->groupBy('invoice', 'tgl_transaksi')
-                                                ->orderBy('tgl_transaksi', 'desc')
+                                                ->groupBy('invoice', 'created_at', 'status')
+                                                ->orderBy('created_at', 'desc')
                                                 ->get();
                                         @endphp
 
@@ -77,11 +77,25 @@
                                                         <div class="d-flex align-items-center col-12">
                                                             <div class="ms-3 col-12">
                                                                 <p class="fw-bold mb-1">{{ $list->invoice }} <span
-                                                                        class="float-right">{{ $list->tgl_transaksi }}</span>
+                                                                        class="float-right">{{ $list->created_at }}</span>
                                                                 </p>
                                                                 <p class="text-muted mb-0">Rp.
                                                                     {{ number_format($totalHarga, 2, ',', '.') }}
                                                                 </p>
+                                                                </p>
+                                                                @if ($list->status == 'dipesan')
+                                                                    <p class="text-info">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @elseif($list->status == 'dikonfirmasi')
+                                                                    <p class="text-success">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @else
+                                                                    <p class="text-danger">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </li>
