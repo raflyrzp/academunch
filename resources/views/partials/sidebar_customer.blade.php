@@ -18,7 +18,7 @@
                           <li class="{{ $title === 'Keranjang' ? 'active' : '' }}"><a
                                   href="{{ route('customer.keranjang') }}"><i class="ti-shopping-cart"></i>
                                   <span>Keranjang</span></a></li>
-                          <li class="{{ $title === 'Riwayat Transaksi' ? 'active' : '' }}">
+                          <li class="{{ Str::contains($title, 'Riwayat') ? 'active' : '' }}">
                               <a href="javascript:void(0)" aria-expanded="true"><i
                                       class="ti-files"></i><span>Riwayat</span></a>
                               <ul class="collapse">

@@ -19,7 +19,7 @@
                                       Tunai</span></a>
                           </li>
 
-                          <li class="{{ $title === 'Laporan Top Up' ? 'active' : '' }}">
+                          <li class="{{ Str::contains($title, 'Laporan') ? 'active' : '' }}">
                               <a href="javascript:void(0)" aria-expanded="true"><i
                                       class="ti-files"></i><span>Laporan</span></a>
                               <ul class="collapse">
