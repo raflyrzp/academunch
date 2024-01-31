@@ -69,27 +69,27 @@ Route::middleware(['auth', 'userAkses:bank'])->group(function () {
     Route::get('/bank/laporan/withdrawal', [BankController::class, 'laporanWithdrawal'])->name('bank.laporan.withdrawal');
 });
 
-Route::middleware(['auth', 'userAkses:customer'])->group(function () {
-    Route::get('/customer', [DashboardController::class, 'customerIndex'])->name('customer.index');
+Route::middleware(['auth', 'userAkses:siswa'])->group(function () {
+    Route::get('/siswa', [DashboardController::class, 'siswaIndex'])->name('siswa.index');
 
     // TOPUP
-    Route::post('/customer/topup', [BankController::class, 'topup'])->name('topup.request');
+    Route::post('/siswa/topup', [BankController::class, 'topup'])->name('topup.request');
 
     // TARIK TUNAI
-    Route::post('/customer/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');
+    Route::post('/siswa/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');
 
     // TRANSAKSI
-    Route::get('/customer/kantin', [TransaksiController::class, 'customerKantinIndex'])->name('customer.kantin');
-    Route::post('/customer/tambahKeKeranjang/{id}', [TransaksiController::class, 'addToCart'])->name('addToCart');
-    Route::get('/customer/keranjang', [TransaksiController::class, 'keranjangIndex'])->name('customer.keranjang');
-    Route::post('/customer/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
-    Route::delete('/customer/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
-    Route::get('/customer/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
-    Route::put('/customer/batalTransaksi/{invoice}', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
+    Route::get('/siswa/kantin', [TransaksiController::class, 'siswaKantinIndex'])->name('siswa.kantin');
+    Route::post('/siswa/tambahKeKeranjang/{id}', [TransaksiController::class, 'addToCart'])->name('addToCart');
+    Route::get('/siswa/keranjang', [TransaksiController::class, 'keranjangIndex'])->name('siswa.keranjang');
+    Route::post('/siswa/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
+    Route::delete('/siswa/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
+    Route::get('/siswa/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
+    Route::put('/siswa/batalTransaksi/{invoice}', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
 
     //RIWAYAT
-    Route::get('/customer/riwayat/transaksi', [TransaksiController::class, 'riwayatTransaksi'])->name('customer.riwayat.transaksi');
-    Route::get('/customer/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('customer.transaksi.detail');
-    Route::get('/customer/riwayat/topup', [BankController::class, 'riwayatTopup'])->name('customer.riwayat.topup');
-    Route::get('/customer/riwayat/withdrawal', [BankController::class, 'riwayatWithdrawal'])->name('customer.riwayat.withdrawal');
+    Route::get('/siswa/riwayat/transaksi', [TransaksiController::class, 'riwayatTransaksi'])->name('siswa.riwayat.transaksi');
+    Route::get('/siswa/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('siswa.transaksi.detail');
+    Route::get('/siswa/riwayat/topup', [BankController::class, 'riwayatTopup'])->name('siswa.riwayat.topup');
+    Route::get('/siswa/riwayat/withdrawal', [BankController::class, 'riwayatWithdrawal'])->name('siswa.riwayat.withdrawal');
 });

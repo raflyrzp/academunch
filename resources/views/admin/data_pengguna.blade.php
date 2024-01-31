@@ -130,7 +130,7 @@
                                     <option value="admin">Admin</option>
                                     <option value="bank">Bank</option>
                                     <option value="kantin">Kantin</option>
-                                    <option value="customer" selected>Customer</option>
+                                    <option value="siswa" selected>siswa</option>
                                 </select>
                             </div>
 
@@ -188,7 +188,7 @@
                                     <option value="bank" {{ $user->role === 'bank' ? 'selected' : '' }}>Bank</option>
                                     <option value="kantin" {{ $user->role === 'kantin' ? 'selected' : '' }}>Kantin
                                     </option>
-                                    <option value="customer" {{ $user->role === 'customer' ? 'selected' : '' }}>Customer
+                                    <option value="siswa" {{ $user->role === 'siswa' ? 'selected' : '' }}>siswa
                                     </option>
                                 </select>
                             </div>

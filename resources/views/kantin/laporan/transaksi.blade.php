@@ -57,7 +57,7 @@
                                             <tr>
                                                 <th class="col-1">No.</th>
                                                 <th>Invoice</th>
-                                                <th>Customer</th>
+                                                <th>siswa</th>
                                                 <th>Produk</th>
                                                 <th>Harga</th>
                                                 <th>Qty</th>

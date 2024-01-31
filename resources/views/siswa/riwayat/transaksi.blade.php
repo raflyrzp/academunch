@@ -71,7 +71,7 @@
                                                 @php
                                                     $totalHarga = App\Models\Transaksi::where('invoice', $list->invoice)->sum('total_harga');
                                                 @endphp
-                                                <a href="{{ route('customer.transaksi.detail', $list->invoice) }}">
+                                                <a href="{{ route('siswa.transaksi.detail', $list->invoice) }}">
                                                     <li
                                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                                         <div class="d-flex align-items-center col-12">

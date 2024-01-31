@@ -87,7 +87,7 @@
                                         <thead class="bg-light text-capitalize">
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Customer</th>
+                                                <th>siswa</th>
                                                 <th>Rekening</th>
                                                 <th>Nominal</th>
                                                 <th>Kode Unik</th>
@@ -149,7 +149,7 @@
                                         <thead class="bg-light text-capitalize">
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Customer</th>
+                                                <th>siswa</th>
                                                 <th>Rekening</th>
                                                 <th>Nominal</th>
                                                 <th>Kode Unik</th>

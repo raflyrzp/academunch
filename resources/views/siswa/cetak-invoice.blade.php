@@ -96,7 +96,7 @@
 
             window.addEventListener('afterprint', function() {
 
-                window.location.href = '{{ route('customer.index') }}';
+                window.location.href = '{{ route('siswa.index') }}';
             });
 
         });

@@ -81,8 +81,8 @@
             @include('partials.sidebar_bank')
         @elseif ($role === 'kantin')
             @include('partials.sidebar_kantin')
-        @elseif ($role === 'customer')
-            @include('partials.sidebar_customer')
+        @elseif ($role === 'siswa')
+            @include('partials.sidebar_siswa')
         @endif
         @yield('content')
 

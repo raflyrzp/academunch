@@ -39,16 +39,16 @@ class DashboardController extends Controller
     public function bankIndex()
     {
         $title = 'Dashboard';
-        $customers = User::where('role', 'customer')->get();
+        $siswas = User::where('role', 'siswa')->get();
         $wallets = Wallet::all();
         $requestTopups = TopUp::where('status', 'menunggu')->get();
         $requestWithdrawals = Withdrawal::where('status', 'menunggu')->get();
         $dataTopup = TopUp::all()->count();
         $dataWithdrawal = Withdrawal::all()->count();
-        return view('bank.index', compact('title', 'customers', 'wallets', 'requestTopups', 'requestWithdrawals', 'dataTopup', 'dataWithdrawal'));
+        return view('bank.index', compact('title', 'siswas', 'wallets', 'requestTopups', 'requestWithdrawals', 'dataTopup', 'dataWithdrawal'));
     }
 
-    public function customerIndex()
+    public function siswaIndex()
     {
         $title = 'Dashboard';
         $wallet = Wallet::where('id_user', auth()->user()->id)->first();
@@ -56,6 +56,6 @@ class DashboardController extends Controller
             ->whereIn('status', ['dipesan', 'dikonfirmasi'])
             ->sum('total_harga');
         $transaksis = Transaksi::where('id_user', auth()->id())->get();
-        return view('customer.index', compact('title', 'wallet', 'pengeluaran', 'transaksis'));
+        return view('siswa.index', compact('title', 'wallet', 'pengeluaran', 'transaksis'));
     }
 }

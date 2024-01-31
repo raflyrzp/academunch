@@ -16,7 +16,7 @@ class BankController extends Controller
     public function topupIndex()
     {
         $wallets = Wallet::all();
-        return view('customer.topup', compact('wallets'));
+        return view('siswa.topup', compact('wallets'));
     }
 
     public function bankTopupIndex()
@@ -48,7 +48,7 @@ class BankController extends Controller
             'status' => 'menunggu',
         ]);
 
-        return redirect()->route('customer.index')->with('success', 'Permintaan Top Up berhasil');
+        return redirect()->route('siswa.index')->with('success', 'Permintaan Top Up berhasil');
     }
 
     public function konfirmasiTopup($id)
@@ -97,7 +97,7 @@ class BankController extends Controller
 
 
 
-        return redirect()->route('customer.index')->with('success', 'Permintaan Withdrawal berhasil');
+        return redirect()->route('siswa.index')->with('success', 'Permintaan Withdrawal berhasil');
     }
 
     public function konfirmasiWithdrawal($id)
@@ -134,7 +134,7 @@ class BankController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('customer.riwayat.topup', compact('topups', 'title', 'wallet'));
+        return view('siswa.riwayat.topup', compact('topups', 'title', 'wallet'));
     }
 
     public function riwayatWithdrawal()
@@ -147,7 +147,7 @@ class BankController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('customer.riwayat.withdrawal', compact('withdrawals', 'title', 'wallet'));
+        return view('siswa.riwayat.withdrawal', compact('withdrawals', 'title', 'wallet'));
     }
 
     public function laporanTopup()

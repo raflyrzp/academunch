@@ -56,7 +56,7 @@
                                         <thead class="bg-light text-capitalize">
                                             <tr>
                                                 <th class="col-1">No.</th>
-                                                <th>Customer</th>
+                                                <th>siswa</th>
                                                 <th>Rekening</th>
                                                 <th>Tanggal</th>
                                                 <th>Nominal</th>

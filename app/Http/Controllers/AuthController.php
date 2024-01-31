@@ -34,8 +34,8 @@ class AuthController extends Controller
         if (Auth::attempt($infologin)) {
             if (Auth::user()->role == "admin") {
                 return redirect()->route('admin.index');
-            } else if (Auth::user()->role == "customer") {
-                return redirect()->route('customer.index');
+            } else if (Auth::user()->role == "siswa") {
+                return redirect()->route('siswa.index');
             } else if (Auth::user()->role == "bank") {
                 return redirect()->route('bank.index');
             } else if (Auth::user()->role == "kantin") {

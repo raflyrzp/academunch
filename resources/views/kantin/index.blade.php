@@ -88,7 +88,7 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Invoice</th>
-                                                <th>Customer</th>
+                                                <th>siswa</th>
                                                 <th>Produk</th>
                                                 <th>Total Harga</th>
                                                 <th>Status</th>

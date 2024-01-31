@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
-    public function customerKantinIndex()
+    public function siswaKantinIndex()
     {
         $title = 'Kantin';
         $produks = Produk::all();
@@ -23,7 +23,7 @@ class TransaksiController extends Controller
             ->orderByDesc('total_terjual')
             ->first();
 
-        return view('customer.kantin', compact('title', 'produks', 'bestSeller'));
+        return view('siswa.kantin', compact('title', 'produks', 'bestSeller'));
     }
 
     public function keranjangIndex()
@@ -40,7 +40,7 @@ class TransaksiController extends Controller
             $totalHarga += $totalHargaPerItem;
         }
 
-        return view('customer.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
+        return view('siswa.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
     }
 
     public function addToCart(Request $request)
@@ -104,7 +104,7 @@ class TransaksiController extends Controller
         $userWallet = Wallet::where('id_user', $id_user)->first();
 
         if ($userWallet->saldo < $totalHarga) {
-            return redirect()->route('customer.index')->with(['error' => 'Saldo anda tidak mencukupi.']);
+            return redirect()->route('siswa.index')->with(['error' => 'Saldo anda tidak mencukupi.']);
         }
         $invoice = 'INV' . auth()->user()->id . now()->format('dmYHis');
         session(['current_invoice' => $invoice]);
@@ -130,7 +130,7 @@ class TransaksiController extends Controller
         $userWallet->save();
 
         $title = 'Invoice';
-        return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
+        return view('siswa.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
     }
 
     public function konfirmasiTransaksi($invoice)
@@ -216,7 +216,7 @@ class TransaksiController extends Controller
 
         session()->forget('current_invoice');
 
-        return view('customer.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status'));
+        return view('siswa.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status'));
     }
 
     public function laporanTransaksiHarian()
@@ -252,7 +252,7 @@ class TransaksiController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('customer.riwayat.transaksi', compact('transaksis', 'title'));
+        return view('siswa.riwayat.transaksi', compact('transaksis', 'title'));
     }
 
     public function detailRiwayatTransaksi($invoice)
@@ -263,6 +263,6 @@ class TransaksiController extends Controller
         $totalHarga = $selectedProducts->sum('total_harga');
         session(['current_invoice' => $invoice]);
 
-        return view('customer.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title'));
+        return view('siswa.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title'));
     }
 }

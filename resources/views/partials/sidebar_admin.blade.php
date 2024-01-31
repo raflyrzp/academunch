@@ -1,10 +1,9 @@
       <!-- sidebar menu area start -->
       <div class="sidebar-menu">
           <div class="sidebar-header">
-              <div class="logo">
-                  <a href=""><img src="assets/images/icon/logo.png" alt="logo"></a>
-                  {{-- <a href="{{ route('admin.index') }}">Fintech App</a> --}}
-              </div>
+              <a href="{{ route('admin.index') }}" class="text-center">
+                  <h2 class="text-white text-center" style="font-size: 1.5rem">Academunch</h2>
+              </a>
           </div>
           <div class="main-menu">
               <div class="menu-inner">
