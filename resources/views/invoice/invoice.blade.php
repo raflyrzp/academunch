@@ -62,8 +62,8 @@
                                     <div class="col-md-6">
                                         <div class="invoice-address">
                                             <h3>Invoice</h3>
-                                            <h5>{{ auth()->user()->nama }}</h5>
-                                            <p>{{ auth()->user()->email }}</p>
+                                            <h5>{{ $pembeli }}</h5>
+                                            <p>{{ $email }}</p>
                                             <p>Status :
                                                 {{ $selectedProducts->first()->status !== null ? strtoupper($selectedProducts->first()->status) : 'DIPESAN' }}
                                             </p>
@@ -121,16 +121,18 @@
 
                                 </div>
                                 <div class="float-right">
-                                    @if ($selectedProducts->first()->status === 'dipesan')
-                                        <form action="{{ route('batal.transaksi', $invoice) }}" method="post"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('PUT')
-                                            <a href="" class="invoice-btn bg-danger">
-                                                <button type="submit"
-                                                    class="border-0 bg-transparent text-white font-weight-bold">Batal
-                                                </button></a>
-                                        </form>
+                                    @if (auth()->user()->role === 'siswa')
+                                        @if ($selectedProducts->first()->status === 'dipesan')
+                                            <form action="{{ route('batal.transaksi', $invoice) }}" method="post"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <a href="" class="invoice-btn bg-danger">
+                                                    <button type="submit"
+                                                        class="border-0 bg-transparent text-white font-weight-bold">Batal
+                                                    </button></a>
+                                            </form>
+                                        @endif
                                     @endif
                                     <a href="#" class="invoice-btn" id="printInvoiceBtn">Cetak Invoice</a>
                                 </div>

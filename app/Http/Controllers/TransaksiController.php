@@ -195,29 +195,6 @@ class TransaksiController extends Controller
         return redirect()->back()->with('success', 'Transaksi dibatalkan');
     }
 
-    public function cetakTransaksi()
-    {
-        $invoice = session('current_invoice');
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-        $totalHarga = $transaksis->sum('total_harga');
-        $status = $transaksis->first()->status;
-
-        $selectedProducts = [];
-        foreach ($transaksis as $transaksi) {
-            $produk = Produk::find($transaksi->id_produk);
-
-            $selectedProducts[] = [
-                'produk' => $produk,
-                'nama_produk' => $produk->nama_produk,
-                'kuantitas' => $transaksi->kuantitas,
-                'total_harga' => $transaksi->total_harga,
-            ];
-        }
-
-        session()->forget('current_invoice');
-
-        return view('siswa.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status'));
-    }
 
     public function laporanTransaksiHarian()
     {
@@ -238,7 +215,6 @@ class TransaksiController extends Controller
     public function laporanTransaksi($invoice)
     {
         $title = 'Detail Laporan Transaksi';
-        // $tanggal = date('Y-m-d', strtotime($tanggal));
         $transaksis = Transaksi::where('invoice', $invoice)->get();
         $totalHarga = $transaksis->sum('total_harga');
 
@@ -254,9 +230,7 @@ class TransaksiController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        $totalHargaPerHari = Transaksi::where('id_user', auth()->id())->whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
-
-        return view('siswa.riwayat.transaksi', compact('transaksis', 'title', 'totalHargaPerHari'));
+        return view('siswa.riwayat.transaksi', compact('transaksis', 'title'));
     }
 
     public function detailRiwayatTransaksi($invoice)
@@ -265,8 +239,35 @@ class TransaksiController extends Controller
 
         $selectedProducts = Transaksi::where('invoice', $invoice)->get();
         $totalHarga = $selectedProducts->sum('total_harga');
+        $pembeli = $selectedProducts->first()->user->nama;
+        $email = $selectedProducts->first()->user->email;
         session(['current_invoice' => $invoice]);
 
-        return view('siswa.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title'));
+        return view('invoice.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title', 'pembeli', 'email'));
+    }
+
+    public function cetakTransaksi()
+    {
+        $invoice = session('current_invoice');
+        $transaksis = Transaksi::where('invoice', $invoice)->get();
+        $totalHarga = $transaksis->sum('total_harga');
+        $status = $transaksis->first()->status;
+        $pembeli = $transaksis->first()->user->nama;
+
+        $selectedProducts = [];
+        foreach ($transaksis as $transaksi) {
+            $produk = Produk::find($transaksi->id_produk);
+
+            $selectedProducts[] = [
+                'produk' => $produk,
+                'nama_produk' => $produk->nama_produk,
+                'kuantitas' => $transaksi->kuantitas,
+                'total_harga' => $transaksi->total_harga,
+            ];
+        }
+
+        session()->forget('current_invoice');
+
+        return view('invoice.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status', 'pembeli'));
     }
 }

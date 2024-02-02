@@ -27,6 +27,10 @@ Route::post('/', [AuthController::class, 'login']);
 //Logout
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
+Route::get('/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('transaksi.detail');
+
+
 Route::middleware(['auth', 'userAkses:admin'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'adminIndex'])->name('admin.index');
 
@@ -84,12 +88,10 @@ Route::middleware(['auth', 'userAkses:siswa'])->group(function () {
     Route::get('/siswa/keranjang', [TransaksiController::class, 'keranjangIndex'])->name('siswa.keranjang');
     Route::post('/siswa/checkout', [TransaksiController::class, 'checkout'])->name('checkout');
     Route::delete('/siswa/keranjang/destroy/{id}', [TransaksiController::class, 'keranjangDestroy'])->name('keranjang.destroy');
-    Route::get('/siswa/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
     Route::put('/siswa/batalTransaksi/{invoice}', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
 
     //RIWAYAT
     Route::get('/siswa/riwayat/transaksi', [TransaksiController::class, 'riwayatTransaksi'])->name('siswa.riwayat.transaksi');
-    Route::get('/siswa/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('siswa.transaksi.detail');
     Route::get('/siswa/riwayat/topup', [BankController::class, 'riwayatTopup'])->name('siswa.riwayat.topup');
     Route::get('/siswa/riwayat/withdrawal', [BankController::class, 'riwayatWithdrawal'])->name('siswa.riwayat.withdrawal');
 });

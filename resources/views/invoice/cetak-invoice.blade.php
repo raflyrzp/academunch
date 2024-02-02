@@ -31,7 +31,7 @@
                         <div class="col-xl-8">
                             <ul class="list-unstyled">
                                 <li class="text-muted">
-                                    Nama : {{ auth()->user()->nama }}
+                                    Nama : {{ $pembeli }}
                                 </li>
                                 <li class="text-muted">{{ now()->format('d F Y') }}</li>
                                 <li class="text-muted">{{ $invoice }}</li>
@@ -96,7 +96,7 @@
 
             window.addEventListener('afterprint', function() {
 
-                window.location.href = '{{ route('siswa.index') }}';
+                window.location.href = '{{ route(auth()->user()->role . '.index') }}';
             });
 
         });

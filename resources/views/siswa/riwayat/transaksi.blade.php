@@ -52,11 +52,6 @@
                                 <h4 class="header-title">Riwayat Transaksi</h4>
                                 <div class="list-group list-group-flush">
                                     @foreach ($transaksis as $transaksi)
-                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">
-                                            {{ $transaksi->tanggal }}
-                                            <span class="float-right">Rp.
-                                                {{ number_format($totalHargaPerHari, 2, ',', '.') }}</span>
-                                        </h6>
                                         @php
                                             $transaksiList = App\Models\Transaksi::select('invoice', 'created_at', 'status')
                                                 ->where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
@@ -64,14 +59,24 @@
                                                 ->groupBy('invoice', 'created_at', 'status')
                                                 ->orderBy('created_at', 'desc')
                                                 ->get();
+
+                                            $totalHarga = App\Models\Transaksi::where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
+                                                ->where('id_user', auth()->id())
+                                                ->whereIn('status', ['dipesan', 'dikonfirmasi'])
+                                                ->sum('total_harga');
                                         @endphp
+                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">
+                                            {{ $transaksi->tanggal }}
+                                            <span class="float-right">Rp.
+                                                {{ number_format($totalHarga, 2, ',', '.') }}</span>
+                                        </h6>
 
                                         <ul class="list-group list-group-light mb-4">
                                             @foreach ($transaksiList as $list)
                                                 @php
                                                     $totalHarga = App\Models\Transaksi::where('invoice', $list->invoice)->sum('total_harga');
                                                 @endphp
-                                                <a href="{{ route('siswa.transaksi.detail', $list->invoice) }}">
+                                                <a href="{{ route('transaksi.detail', $list->invoice) }}">
                                                     <li
                                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                                         <div class="d-flex align-items-center col-12">

@@ -77,6 +77,19 @@
                                                             <p class="text-muted mb-0">Rp.
                                                                 {{ number_format($list->nominal, 2, ',', '.') }}
                                                             </p>
+                                                            @if ($list->status == 'menunggu')
+                                                                <p class="text-info">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </p>
+                                                            @elseif($list->status == 'dikonfirmasi')
+                                                                <p class="text-success">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </p>
+                                                            @else
+                                                                <p class="text-danger">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </p>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </li>
