@@ -55,7 +55,7 @@
                                     @foreach ($topups as $topup)
                                         <h6 class="bg-body-tertiary p-2 border-top border-bottom">
                                             {{ $topup->tanggal }}
-                                            <span class="float-right">Rp.
+                                            <span class="float-right text-success">+ Rp.
                                                 {{ number_format($topup->nominal, 2, ',', '.') }}</span>
                                         </h6>
                                         @php
@@ -78,17 +78,17 @@
                                                                 {{ number_format($list->nominal, 2, ',', '.') }}
                                                             </p>
                                                             @if ($list->status == 'menunggu')
-                                                                <p class="text-info">
+                                                                <span class="badge badge-info p-2">
                                                                     {{ strtoupper($list->status) }}
-                                                                </p>
+                                                                </span>
                                                             @elseif($list->status == 'dikonfirmasi')
-                                                                <p class="text-success">
+                                                                <span class="badge badge-success p-2">
                                                                     {{ strtoupper($list->status) }}
-                                                                </p>
+                                                                </span>
                                                             @else
-                                                                <p class="text-danger">
+                                                                <span class="badge badge-info p-2">
                                                                     {{ strtoupper($list->status) }}
-                                                                </p>
+                                                                </span>
                                                             @endif
                                                         </div>
                                                     </div>

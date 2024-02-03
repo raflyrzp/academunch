@@ -40,15 +40,24 @@ class BankController extends Controller
             'rekening' => 'required|string|exists:wallets,rekening',
         ]);
 
+        if (auth()->user()->role === 'bank') {
+            $status = 'dikonfirmasi';
+            $wallet = Wallet::where('rekening', $request->rekening)->first();
+            $wallet->saldo += $request->nominal;
+            $wallet->save();
+        } else {
+            $status = 'menunggu';
+        }
+
         $kodeUnik = "TU" . auth()->user()->id . now()->format('dmYHis');
         $topup = TopUp::create([
             'rekening' => $request->rekening,
             'nominal' => $request->nominal,
             'kode_unik' => $kodeUnik,
-            'status' => 'menunggu',
+            'status' => $status,
         ]);
 
-        return redirect()->route('siswa.index')->with('success', 'Permintaan Top Up berhasil');
+        return redirect()->back()->with('success', 'Permintaan Top Up berhasil');
     }
 
     public function konfirmasiTopup($id)
@@ -87,17 +96,26 @@ class BankController extends Controller
             return redirect()->back()->with('error', 'Saldo tidak mencukupi.');
         }
 
+        if (auth()->user()->role === 'bank') {
+            $status = 'dikonfirmasi';
+            $wallet = Wallet::where('rekening', $request->rekening)->first();
+            $wallet->saldo -= $request->nominal;
+            $wallet->save();
+        } else {
+            $status = 'menunggu';
+        }
+
         $kodeUnik = "WD" . auth()->user()->id . now()->format('dmYHis');
         $withdrawal = Withdrawal::create([
             'rekening' => $request->rekening,
             'nominal' => $request->nominal,
             'kode_unik' => $kodeUnik,
-            'status' => 'menunggu',
+            'status' => $status,
         ]);
 
 
 
-        return redirect()->route('siswa.index')->with('success', 'Permintaan Withdrawal berhasil');
+        return redirect()->back()->with('success', 'Permintaan Withdrawal berhasil');
     }
 
     public function konfirmasiWithdrawal($id)

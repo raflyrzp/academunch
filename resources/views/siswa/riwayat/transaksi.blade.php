@@ -67,7 +67,7 @@
                                         @endphp
                                         <h6 class="bg-body-tertiary p-2 border-top border-bottom">
                                             {{ $transaksi->tanggal }}
-                                            <span class="float-right">Rp.
+                                            <span class="float-right text-danger">- Rp.
                                                 {{ number_format($totalHarga, 2, ',', '.') }}</span>
                                         </h6>
 
@@ -89,15 +89,15 @@
                                                                 </p>
                                                                 </p>
                                                                 @if ($list->status == 'dipesan')
-                                                                    <p class="text-info">
+                                                                    <p class="badge badge-info p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @elseif($list->status == 'dikonfirmasi')
-                                                                    <p class="text-success">
+                                                                    <p class="badge badge-success p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @else
-                                                                    <p class="text-danger">
+                                                                    <p class="badge badge-danger p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @endif

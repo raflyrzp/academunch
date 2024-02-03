@@ -51,6 +51,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="header-title">Permintaan Top Up</h4>
+                                <button type="button" class="btn btn-primary mb-3" data-toggle="modal"
+                                    data-target="#topupModal"><i class="ti-plus"></i> Top
+                                    Up</button>
                                 <div class="data-tables">
                                     <table id="table1" class="table table-bordered table-hover">
                                         <thead class="bg-light text-capitalize">
@@ -113,4 +116,47 @@
         </div>
     </div>
     <!-- main content area end -->
+
+
+
+    <div class="modal fade" id="topupModal" tabindex="-1" role="dialog" aria-labelledby="topupModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="topupModalLabel">Top Up</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('topup.request') }}" method="post">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="rekening">Rekening</label>
+                            <input id="rekening" name="rekening" type="text" placeholder="" class="form-control"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nominal">Nominal</label>
+                            <input type="text" id="nominal" class="form-control" placeholder="" name="nominal"
+                                required>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Batal</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary ms-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Top Up</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection

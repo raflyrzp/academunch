@@ -216,14 +216,10 @@
                                 <label for="desc">Desc</label>
                                 <textarea class="form-control" name="desc" id="desc" cols="30" rows="10" required>{{ $produk->desc }}</textarea>
                             </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                                </div>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="foto" name="foto">
-                                    <label class="custom-file-label" for="foto">Choose file</label>
-                                </div>
+                            <div class="form-group">
+                                <label for="foto">Foto</label>
+                                <img src="{{ asset('storage/produk/' . $produk->foto) }}" class="mb-3" width="100px">
+                                <input id="foto" name="foto" type="file" class="form-control" required>
                             </div>
                         </div>
                         <div class="modal-footer">

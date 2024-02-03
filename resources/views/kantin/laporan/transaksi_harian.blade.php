@@ -86,15 +86,15 @@
                                                                     {{ number_format($totalHarga, 2, ',', '.') }}
                                                                 </p>
                                                                 @if ($list->status == 'dipesan')
-                                                                    <p class="text-info">
+                                                                    <p class="badge badge-info p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @elseif($list->status == 'dikonfirmasi')
-                                                                    <p class="text-success">
+                                                                    <p class="badge badge-success p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @else
-                                                                    <p class="text-danger">
+                                                                    <p class="badge badge-danger p-2">
                                                                         {{ strtoupper($list->status) }}
                                                                     </p>
                                                                 @endif

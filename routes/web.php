@@ -27,8 +27,15 @@ Route::post('/', [AuthController::class, 'login']);
 //Logout
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// INVOICE
 Route::get('/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
 Route::get('/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('transaksi.detail');
+
+// TARIK TUNAI
+Route::post('/siswa/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');
+
+// TOP UP
+Route::post('/siswa/topup', [BankController::class, 'topup'])->name('topup.request');
 
 
 Route::middleware(['auth', 'userAkses:admin'])->group(function () {
@@ -75,12 +82,6 @@ Route::middleware(['auth', 'userAkses:bank'])->group(function () {
 
 Route::middleware(['auth', 'userAkses:siswa'])->group(function () {
     Route::get('/siswa', [DashboardController::class, 'siswaIndex'])->name('siswa.index');
-
-    // TOPUP
-    Route::post('/siswa/topup', [BankController::class, 'topup'])->name('topup.request');
-
-    // TARIK TUNAI
-    Route::post('/siswa/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');
 
     // TRANSAKSI
     Route::get('/siswa/kantin', [TransaksiController::class, 'siswaKantinIndex'])->name('siswa.kantin');
