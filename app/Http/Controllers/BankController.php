@@ -172,7 +172,10 @@ class BankController extends Controller
     {
         $title = 'Laporan Top Up';
 
-        $topups = TopUp::all();
+        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         return view('bank.laporan.topup', compact('topups', 'title'));
     }
@@ -180,9 +183,33 @@ class BankController extends Controller
     public function laporanWithdrawal()
     {
         $title = 'Laporan Tarik Tunai';
-
-        $withdrawals = Withdrawal::all();
+        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         return view('bank.laporan.withdrawal', compact('withdrawals', 'title'));
+    }
+
+    public function cetakTopup()
+    {
+        $title = 'Cetak Topup';
+        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return view('invoice.cetak-topup', compact('topups', 'title'));
+    }
+
+    public function cetakWithdrawal()
+    {
+        $title = 'Cetak Withdrawal';
+        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return view('invoice.cetak-withdrawal', compact('withdrawals', 'title'));
     }
 }

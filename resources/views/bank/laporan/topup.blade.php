@@ -46,45 +46,65 @@
             <!-- sales report area start -->
             <div class="sales-report-area sales-style-two">
                 <div class="row">
-                    <!-- data table start -->
-                    <div class="col-12 mt-5">
+                    <!-- laporan -->
+                    <div class="col-md-12 mt-5">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="header-title">Riwayat Top Up</h4>
-                                <div class="data-tables">
-                                    <table id="table1" class="table table-bordered table-hover">
-                                        <thead class="bg-light text-capitalize">
-                                            <tr>
-                                                <th class="col-1">No.</th>
-                                                <th>siswa</th>
-                                                <th>Rekening</th>
-                                                <th>Tanggal</th>
-                                                <th>Nominal</th>
-                                                <th>Kode Unik</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($topups as $i => $topup)
-                                                <tr>
-                                                    <td>{{ $i + 1 }}</td>
-                                                    <td>{{ $topup->wallet->user->nama }}</td>
-                                                    <td>{{ $topup->wallet->rekening }}</td>
-                                                    <td>{{ $topup->created_at }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($topup->nominal, 0, ',', '.') }},00</td>
-                                                    <td>{{ $topup->kode_unik }}</td>
-                                                    <td>{{ $topup->status }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
+                                <h4 class="header-title">Laporan Topup</h4>
+                                <a href="{{ route('cetak.topup') }}" class="btn btn-danger mb-3"><i class="ti-printer"></i>
+                                    Cetak</a>
+                                <div class="list-group list-group-flush">
+                                    @foreach ($topups as $topup)
+                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">
+                                            {{ $topup->tanggal }}
+                                            <span class="float-right text-success">+ Rp.
+                                                {{ number_format($topup->nominal, 2, ',', '.') }}</span>
+                                        </h6>
+                                        @php
+                                            $topupList = App\Models\TopUp::where(DB::raw('DATE(created_at)'), $topup->tanggal)
+                                                ->orderBy('created_at', 'desc')
+                                                ->get();
+                                        @endphp
 
-                                    </table>
+                                        <ul class="list-group list-group-light mb-4">
+                                            @foreach ($topupList as $list)
+                                                <li
+                                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center col-12">
+                                                        <div class="ms-3 col-12">
+                                                            <p class="fw-bold mb-1">{{ $list->kode_unik }} <span
+                                                                    class="float-right">{{ $list->created_at }}</span>
+                                                            </p>
+                                                            <p class="text-muted mb-0">
+                                                                {{ $list->wallet->user->nama . ' (' . $list->wallet->rekening . ')' }}
+                                                            </p>
+                                                            <p class="text-success mb-0">+ Rp.
+                                                                {{ number_format($list->nominal, 2, ',', '.') }}
+                                                            </p>
+                                                            @if ($list->status == 'menunggu')
+                                                                <span class="badge badge-info p-2">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </span>
+                                                            @elseif($list->status == 'dikonfirmasi')
+                                                                <span class="badge badge-success p-2">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </span>
+                                                            @else
+                                                                <span class="badge badge-info p-2">
+                                                                    {{ strtoupper($list->status) }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- data table end -->
+                    <!-- laporan -->
                 </div>
             </div>
             <!-- sales report area end -->
