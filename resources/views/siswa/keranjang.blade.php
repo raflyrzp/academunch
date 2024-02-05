@@ -44,91 +44,140 @@
             </div>
         </div>
 
-        <!-- page title area end -->
-        <div class="main-content-inner">
-            <div class="row">
-                <!-- table dark start -->
-                <div class="col-12 mt-5">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title">Keranjang</h4>
-                            <div class="single-table">
-                                <div class="table-responsive">
-                                    <table class="table text-center">
-                                        <thead class="text-uppercase bg-dark">
-                                            <tr class="text-white">
-                                                <th scope="col"></th>
-                                                <th scope="col">Produk</th>
-                                                <th scope="col">Harga</th>
-                                                <th scope="col">Qty</th>
-                                                <th scope="col">Total Harga</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($keranjangs as $keranjang)
-                                                <tr class="text-center">
-                                                    <td style="vertical-align: middle;"> <img width="100px"
-                                                            src="{{ asset('storage/produk/' . $keranjang->produk->foto) }}"
-                                                            alt=""></td>
-                                                    <td style="vertical-align: middle;">
-                                                        {{ $keranjang->produk->nama_produk }}</td>
-                                                    <td style="vertical-align: middle;">
-                                                        Rp.{{ number_format($keranjang->produk->harga, 0, ',', '.') }},00
-                                                    </td>
-                                                    <td style="vertical-align: middle;">{{ $keranjang->jumlah_produk }}
-                                                    </td>
-                                                    <td style="vertical-align: middle;">
-                                                        Rp.{{ number_format($keranjang->total_harga, 0, ',', '.') }},00
-                                                    </td>
-                                                    <td style="vertical-align: middle;">
-                                                        <!-- Change the form method to DELETE -->
-                                                        <form action="{{ route('keranjang.destroy', $keranjang->id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                style="background: transparent; border: none; padding: 0;"
-                                                                onclick="return confirm('Anda yakin ingin menghapus produk ini?')">
-                                                                <a href=""><i class="ti-trash"></i></a>
-                                                            </button>
-                                                        </form>
+        <section class="h-100 h-custom" style="background-color: #eee;">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body p-4">
 
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                        <tfoot>
-                                            <tr class="font-weight-bold">
-                                                <td colspan="4" class="text-right">TOTAL SELURUH HARGA :
-                                                </td>
-                                                <td>Rp.{{ number_format($totalHarga, 0, ',', '.') }},00</td>
-                                                <td></td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                <div class="row">
+
+                                    <div class="col-lg-8">
+                                        <h5 class="mb-3">Keranjang</h5>
+                                        <hr>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <div>
+                                                <p class="mb-1">Lihat ini...</p>
+                                                <p class="mb-0">Kamu mempunyai {{ $keranjangs->count() }} jenis produk,
+                                                    Ayo Checkout!!</p>
+                                            </div>
+                                        </div>
+
+                                        @foreach ($keranjangs as $keranjang)
+                                            <div class="card mb-3"
+                                                style="box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="d-flex flex-row align-items-center">
+                                                            <div>
+                                                                <img src="{{ asset('storage/produk/' . $keranjang->produk->foto) }}"
+                                                                    class="img-fluid rounded-3" alt="Shopping item"
+                                                                    style="width: 65px;">
+                                                            </div>
+                                                            <div class="ml-3">
+                                                                <h5>{{ $keranjang->produk->nama_produk }}</h5>
+                                                                <p class="small mb-0">
+                                                                    Rp.
+                                                                    {{ number_format($keranjang->produk->harga, 2, ',', '.') }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex flex-row align-items-center">
+                                                            <div style="width: 100px;">
+                                                                <h5 class="fw-normal mb-0">{{ $keranjang->jumlah_produk }}
+                                                                    (pcs)
+                                                                </h5>
+                                                            </div>
+                                                            <div style="width: 150px;">
+                                                                <h5 class="mb-0">Rp.
+                                                                    {{ number_format($keranjang->total_harga, 2, ',', '.') }}
+                                                                </h5>
+                                                            </div>
+                                                            <form action="{{ route('keranjang.destroy', $keranjang->id) }}"
+                                                                method="post">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    style="background: transparent; border: none; padding: 0;"
+                                                                    onclick="return confirm('Anda yakin ingin menghapus produk ini?')">
+                                                                    <a href="" class="text-danger"><i
+                                                                            class="ti-trash"></i></a>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="col-lg-4">
+
+                                        <div class="card bg-dark text-white rounded-3">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                                    <h5 class="mb-0">Checkout</h5>
+                                                </div>
+                                                <p class="small text-white">Saldo</p>
+                                                <p class="text-white">Rp. {{ number_format($wallet->saldo, 2, ',', '.') }}
+                                                </p>
+
+                                                <hr class="my-4 bg-white">
+
+                                                <div class="d-flex justify-content-between">
+                                                    <p class="mb-2 text-white">Subtotal</p>
+                                                    <p class="mb-2 text-white">Rp.
+                                                        {{ number_format($totalHarga, 2, ',', '.') }}</p>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between">
+                                                    <p class="mb-2 text-white">Diskon</p>
+                                                    <p class="mb-2 text-white">0%</p>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <p class="mb-2 text-white">Total</p>
+                                                    <p class="mb-2 text-white">Rp.
+                                                        {{ number_format($totalHarga, 2, ',', '.') }}</p>
+                                                </div>
+
+
+                                                <form action="{{ route('checkout') }}" method="post">
+                                                    @csrf
+                                                    @if ($totalHarga > $wallet->saldo)
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg"
+                                                            disabled>
+                                                            <div class="d-flex justify-content-center">
+                                                                <span>SALDO KAMU TIDAK CUKUP</span>
+                                                            </div>
+                                                        </button>
+                                                    @else
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                                            <div class="d-flex justify-content-between">
+                                                                <span>Rp.
+                                                                    {{ number_format($totalHarga, 2, ',', '.') }}</span>
+                                                                <span>CHECKOUT</span>
+                                                            </div>
+                                                        </button>
+                                                    @endif
+                                                </form>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
 
                                 </div>
-                            </div>
-                            <div class="text-right mt-3">
-                                <form action="{{ route('checkout') }}" method="post">
-                                    @csrf
-                                    @if ($totalHarga > $wallet->saldo)
-                                        <button type="submit" class="btn btn-dark col-2 btn-flat">Beli</button>
-                                    @else
-                                        <button type="submit" class="btn btn-dark col-2">Beli</button>
-                                    @endif
-                                </form>
+
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- table dark end -->
-
             </div>
-        </div>
+        </section>
     </div>
-    <!-- main content area end -->
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

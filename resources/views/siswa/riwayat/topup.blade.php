@@ -76,7 +76,7 @@
                                                             <p class="fw-bold mb-1">{{ $list->kode_unik }} <span
                                                                     class="float-right">{{ $list->created_at }}</span>
                                                             </p>
-                                                            <p class="text-muted mb-0">Rp.
+                                                            <p class="text-success mb-0">+ Rp.
                                                                 {{ number_format($list->nominal, 2, ',', '.') }}
                                                             </p>
                                                             @if ($list->status == 'menunggu')

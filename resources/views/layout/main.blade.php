@@ -30,6 +30,29 @@
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
     <!-- modernizr css -->
     <script src="{{ asset('assets/js/vendor/modernizr-2.8.3.min.js') }}"></script>
+
+    <style>
+        .btn-primary {
+            background-color: #805EF5;
+            border: 1px solid #805EF5;
+        }
+
+        .btn-primary:disabled {
+            background-color: #805EF5;
+            border: 1px solid #805EF5;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary:focus {
+            border-color: #805EF5;
+        }
+
+        .btn-primary:hover {
+            background-color: #5835cc;
+            border: 1px solid #5835cc;
+        }
+    </style>
 </head>
 
 <body>

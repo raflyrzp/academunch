@@ -99,7 +99,6 @@ class ProdukController extends Controller
             'id_kategori' => 'required|exists:kategoris,id',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|numeric',
-            // 'foto' => 'required|image|mimes:jpeg,jpg,png|max:2048',
             'desc' => 'required'
         ]);
 

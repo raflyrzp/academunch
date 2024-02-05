@@ -198,7 +198,7 @@ class TransaksiController extends Controller
     }
 
 
-    public function laporanTransaksiHarian()
+    public function laporanTransaksi()
     {
         $title = 'Laporan Transaksi';
 
@@ -211,16 +211,7 @@ class TransaksiController extends Controller
 
         $totalHarga = $transaksis->sum('total_harga');
 
-        return view('kantin.laporan.transaksi_harian', compact('transaksis', 'totalHarga', 'title', 'totalHargaPerHari'));
-    }
-
-    public function laporanTransaksi($invoice)
-    {
-        $title = 'Detail Laporan Transaksi';
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-        $totalHarga = $transaksis->sum('total_harga');
-
-        return view('kantin.laporan.transaksi', compact('transaksis', 'totalHarga', 'title'));
+        return view('kantin.laporan.transaksi', compact('transaksis', 'totalHarga', 'title', 'totalHargaPerHari'));
     }
 
     public function riwayatTransaksi()

@@ -45,58 +45,76 @@
         </div>
         <!-- page title area end -->
         <div class="main-content-inner">
-            <!-- sales report area start -->
             <div class="sales-report-area sales-style-two">
                 <div class="row">
-                    <!-- data table start -->
-                    <div class="col-12 mt-5">
+                    <!-- laporan -->
+                    <div class="col-md-12 mt-5">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="header-title">Tabel Transaksi</h4>
-                                <div class="data-tables">
-                                    <table id="table1" class="table table-bordered table-hover">
-                                        <thead class="bg-light text-capitalize">
-                                            <tr>
-                                                <th class="col-1">No.</th>
-                                                <th>Invoice</th>
-                                                <th>siswa</th>
-                                                <th>Produk</th>
-                                                <th>Harga</th>
-                                                <th>Qty</th>
-                                                <th>Total Harga</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($transaksis as $i => $transaksi)
-                                                <tr>
-                                                    <td>{{ $i + 1 }}</td>
-                                                    <td>{{ $transaksi->invoice }}</td>
-                                                    <td>{{ $transaksi->user->nama }}</td>
-                                                    <td>{{ $transaksi->produk->nama_produk }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($transaksi->harga, 0, ',', '.') }},00</td>
-                                                    <td>{{ $transaksi->kuantitas }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($transaksi->total_harga, 0, ',', '.') }},00</td>
-                                                </tr>
+                                <h4 class="header-title">Laporan Transaksi</h4>
+                                <div class="list-group list-group-flush">
+                                    @foreach ($transaksis as $transaksi)
+                                        @php
+                                            $transaksiList = App\Models\Transaksi::select('invoice', 'created_at', 'status')
+                                                ->where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
+                                                ->groupBy('invoice', 'created_at', 'status')
+                                                ->orderBy('invoice', 'desc')
+                                                ->get();
+
+                                            $totalHarga = App\Models\Transaksi::where(DB::raw('DATE(created_at)'), $transaksi->tanggal)
+                                                ->whereIn('status', ['dipesan', 'dikonfirmasi'])
+                                                ->sum('total_harga');
+                                        @endphp
+                                        <h6 class="bg-body-tertiary p-2 border-top border-bottom">
+                                            {{ $transaksi->tanggal }}
+                                            <span class="float-right text-success">+ Rp.
+                                                {{ number_format($totalHarga, 2, ',', '.') }}</span>
+                                        </h6>
+
+                                        <ul class="list-group list-group-light mb-4">
+                                            @foreach ($transaksiList as $list)
+                                                @php
+                                                    $totalHarga = App\Models\Transaksi::where('invoice', $list->invoice)->sum('total_harga');
+                                                @endphp
+                                                <a href="{{ route('transaksi.detail', $list->invoice) }}">
+                                                    <li
+                                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex align-items-center col-12">
+                                                            <div class="col-12">
+                                                                <p class="fw-bold mb-1">{{ $list->invoice }} <span
+                                                                        class="float-right">{{ $list->created_at }}</span>
+                                                                </p>
+                                                                <p class="mb-0 text-success">+ Rp.
+                                                                    {{ number_format($totalHarga, 2, ',', '.') }}
+                                                                </p>
+                                                                @if ($list->status == 'dipesan')
+                                                                    <p class="badge badge-info p-2">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @elseif($list->status == 'dikonfirmasi')
+                                                                    <p class="badge badge-success p-2">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @else
+                                                                    <p class="badge badge-danger p-2">
+                                                                        {{ strtoupper($list->status) }}
+                                                                    </p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </a>
                                             @endforeach
-                                        </tbody>
-                                        <tfoot>
-                                            <tr class="font-weight-bold">
-                                                <td colspan="6" class="text-right">TOTAL SELURUH HARGA :
-                                                </td>
-                                                <td>Rp.{{ number_format($totalHarga, 0, ',', '.') }},00</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                        </ul>
+                                    @endforeach
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- data table end -->
+                    <!-- laporan -->
                 </div>
             </div>
-            <!-- sales report area end -->
         </div>
     </div>
     <!-- main content area end -->

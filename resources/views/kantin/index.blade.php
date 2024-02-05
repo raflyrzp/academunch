@@ -124,7 +124,7 @@
                                                                 method="post" style="display: inline;">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <button type="submit" class="btn btn-primary btn-sm"><i
+                                                                <button type="submit" class="btn btn-success btn-sm"><i
                                                                         class="ti-check"></i></button>
                                                             </form>
 

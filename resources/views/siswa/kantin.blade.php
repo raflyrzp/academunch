@@ -70,8 +70,8 @@
                                         <p class="lead mb-3">Rp. {{ number_format($bestSeller->harga, 0, ',', '.') }},00
                                         </p>
                                         <div class="d-flex">
-                                            <button class="btn btn-outline-dark flex-shrink-0" type="button"
-                                                data-toggle="modal" data-target='#addToCart{{ $bestSeller->id }}'>
+                                            <button class="btn btn-primary flex-shrink-0" type="button" data-toggle="modal"
+                                                data-target='#addToCart{{ $bestSeller->id }}'>
                                                 <i class="ti-shopping-cart"></i> Tambah ke Keranjang
                                             </button>
                                         </div>
@@ -92,27 +92,31 @@
                                 class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center mt-5">
                                 @foreach ($produks as $produk)
                                     <div class="col-3 mb-5">
-                                        <div class="card h-100"
-                                            style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
-                                            <img class="card-img-top" src="{{ asset('storage/produk/' . $produk->foto) }}"
-                                                alt="{{ $produk->nama_produk }}"
-                                                style="max-height: 15em; object-fit: cover;" />
-                                            <div
-                                                class="card-img-overlay text-white top-0 right-0 p-0 m-0 col-5 text-center">
-                                                <p class="text-white p-1" style="background-color: rgba(0, 0, 0, 0.7)">
-                                                    {{ $produk->kategori->nama_kategori }}</p>
-                                            </div>
-                                            <div class="card-body p-4">
-                                                <div class="text-center">
-                                                    <h5 class="fw-bolder mb-3">{{ $produk->nama_produk }}</h5>
-                                                    <p class="mb-3">Tersedia : {{ $produk->stok }}</p>
-                                                    <h5>Rp. {{ number_format($produk->harga, 0, ',', '.') }},00</h5>
+                                        <div class="" style="border-radius:20px;">
+                                            <div class="d-flex justify-content-center align-items-center position-relative"
+                                                style="max-height: 12em; overflow: hidden; border-radius: 20px;">
+                                                <img class="card-img-top  position-relative"
+                                                    src="{{ asset('storage/produk/' . $produk->foto) }}"
+                                                    alt="{{ $produk->nama_produk }}"
+                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px; z-index: 1;" />
+
+                                                <div
+                                                    style="content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 20px; box-shadow: rgba(204, 219, 232, 0.5) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; z-index:999;">
                                                 </div>
                                             </div>
-                                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                                <div class="text-center"><button class="btn btn-outline-dark mt-auto"
-                                                        data-toggle="modal" data-target="#addToCart{{ $produk->id }}"><i
-                                                            class="ti-shopping-cart"></i> Tambah ke Keranjang</button></div>
+
+                                            <div class="m-3">
+
+                                                <h6 class="mb-2">{{ $produk->nama_produk }} <span
+                                                        class="small float-right">{{ $produk->stok }}(pcs)</span>
+                                                </h6>
+                                                <p class="mb-2">{{ $produk->kategori->nama_kategori }}</p>
+                                                {{-- <p class="mb-3">Tersedia : {{ $produk->stok }}</p> --}}
+                                                <h5 class="mb-3">Rp. {{ number_format($produk->harga, 2, ',', '.') }}
+                                                </h5>
+                                                <button class="btn btn-primary btn-sm btn-block btn-rounded"
+                                                    data-toggle="modal" data-target="#addToCart{{ $produk->id }}"><i
+                                                        class="ti-shopping-cart"></i> Tambah ke Keranjang</button>
                                             </div>
                                         </div>
                                     </div>
@@ -138,6 +142,7 @@
                         <form action="{{ route('addToCart', $produk->id) }}" method="post">
                             @csrf
                             <div class="modal-body">
+                                <p class="mb-3">Tersedia : {{ $produk->stok }} (pcs)</p>
                                 <input type="hidden" name="id_user" value="{{ auth()->user()->id }}">
                                 <input type="hidden" name="id_produk" value="{{ $produk->id }}">
                                 <input type="hidden" name="harga" value="{{ $produk->harga }}">

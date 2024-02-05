@@ -86,7 +86,7 @@
                                                                 <p class="fw-bold mb-1">{{ $list->invoice }} <span
                                                                         class="float-right">{{ $list->created_at }}</span>
                                                                 </p>
-                                                                <p class="text-muted mb-0">Rp.
+                                                                <p class="text-danger mb-0">- Rp.
                                                                     {{ number_format($totalHarga, 2, ',', '.') }}
                                                                 </p>
                                                                 </p>

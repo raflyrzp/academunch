@@ -96,7 +96,7 @@
 
             window.addEventListener('afterprint', function() {
 
-                window.location.href = '{{ route(auth()->user()->role . '.index') }}';
+                window.location.href = '{{ url()->previous() }}';
             });
 
         });

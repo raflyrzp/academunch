@@ -119,8 +119,12 @@
                             </div>
                             <div class="invoice-buttons">
                                 <div class="float-left">
-                                    <a href="javascript:history.back()">Kembali</a>
-
+                                    @if (auth()->user()->role === 'kantin')
+                                        <a href="{{ route('kantin.laporan') }}">Kembali</a>
+                                    @else
+                                        <a href="{{ route('siswa.riwayat.transaksi') }}">Kembali</a>
+                                    @endif
+                                    {{-- <a href="javascript:history.back()">Kembali</a> --}}
                                 </div>
                                 <div class="float-right">
                                     @if (auth()->user()->role === 'siswa')
