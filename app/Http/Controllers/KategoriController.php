@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produk;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -88,6 +89,11 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         $kategori = Kategori::find($id);
+        $produks = Produk::where('id_kategori', $id)->get();
+        foreach ($produks as $produk) {
+            $produk->id_kategori = 1;
+            $produk->save();
+        }
 
         $kategori->delete();
 

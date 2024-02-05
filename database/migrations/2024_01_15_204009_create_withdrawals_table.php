@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('kode_unik');
             $table->enum('status', ['menunggu', 'dikonfirmasi', 'ditolak']);
             $table->timestamps();
+
+            $table->foreign('rekening')->references('rekening')->on('wallets')->onDelete('cascade');
         });
     }
 

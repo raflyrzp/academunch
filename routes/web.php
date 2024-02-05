@@ -60,7 +60,7 @@ Route::middleware(['auth', 'userAkses:kantin'])->group(function () {
     Route::put('/kantin/tolakTransaksi/{id}', [TransaksiController::class, 'tolakTransaksi'])->name('tolak.transaksi');
 
     //LAPORAN
-    Route::get('/kantin/laporan-harian', [TransaksiController::class, 'laporanTransaksiHarian'])->name('kantin.laporan');
+    Route::get('/kantin/riwayat/transaksi', [TransaksiController::class, 'laporanTransaksiHarian'])->name('kantin.laporan');
     Route::get('/kantin/laporan-harian/{tanggal}', [TransaksiController::class, 'laporanTransaksi'])->name('kantin.laporan.harian');
 });
 

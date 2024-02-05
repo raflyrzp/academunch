@@ -60,6 +60,9 @@ class DatabaseSeeder extends Seeder
         // Kategori Seeder
         $dataKategori = [
             [
+                'nama_kategori' => 'Tidak ada',
+            ],
+            [
                 'nama_kategori' => 'Makanan',
             ],
             [
@@ -79,7 +82,7 @@ class DatabaseSeeder extends Seeder
                 'stok' => 10,
                 'foto' => 'default.jpeg',
                 'desc' => 'minuman air mineral saingan Aqua',
-                'id_kategori' => 1,
+                'id_kategori' => 3,
             ],
             [
                 'nama_produk' => 'Mie Ayam',

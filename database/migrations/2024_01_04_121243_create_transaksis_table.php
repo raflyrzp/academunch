@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
             $table->string('invoice');
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_produk');
+            $table->foreignId('id_user')->constrained('users');
+            $table->foreignId('id_produk')->constrained('produks');
             $table->enum('status', ['dipesan', 'dikonfirmasi', 'ditolak', 'batal']);
             $table->double('harga', 5);
             $table->integer('kuantitas');

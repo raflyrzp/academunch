@@ -128,9 +128,11 @@ class TransaksiController extends Controller
 
         $userWallet->saldo -= $totalHarga;
         $userWallet->save();
+        $pembeli = auth()->user()->nama;
+        $email = auth()->user()->email;
 
         $title = 'Invoice';
-        return view('siswa.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice'));
+        return view('invoice.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice', 'pembeli', 'email'));
     }
 
     public function konfirmasiTransaksi($invoice)
