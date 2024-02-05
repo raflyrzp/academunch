@@ -31,9 +31,10 @@
                 </div>
                 <div class="col-sm-6 clearfix">
                     <div class="user-profile pull-right">
-                        <img class="avatar user-thumb" src="{{ asset('assets/images/author/avatar.png') }}" alt="avatar">
-                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">{{ auth()->user()->nama }} <i
-                                class="fa fa-angle-down"></i></h4>
+                        {{-- <img class="avatar user-thumb" src="{{ asset('assets/images/author/avatar.png') }}" alt="avatar"> --}}
+                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">
+                            {{ auth()->user()->nama . '(' . auth()->user()->role . ')' }} <i class="fa fa-angle-down"></i>
+                        </h4>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ route('logout') }}">Log Out</a>
                         </div>
@@ -73,10 +74,12 @@
                                                             data-target="#editModal{{ $kategori->id }}"><i
                                                                 class="ti-pencil"></i></button>
 
-                                                        <button type="button" class="btn btn-sm btn-danger mb-1"
-                                                            data-toggle="modal"
-                                                            data-target="#deleteModal{{ $kategori->id }}"><i
-                                                                class="ti-trash"></i></button>
+                                                        @if ($kategori->id !== 1)
+                                                            <button type="button" class="btn btn-sm btn-danger mb-1"
+                                                                data-toggle="modal"
+                                                                data-target="#deleteModal{{ $kategori->id }}"><i
+                                                                    class="ti-trash"></i></button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach

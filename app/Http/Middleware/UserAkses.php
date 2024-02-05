@@ -18,7 +18,7 @@ class UserAkses
         if ($request->user() && $request->user()->hasRole($role)) {
             return $next($request);
         } else {
-            return redirect()->route('blocked');
+            return abort(403);
         }
     }
 }

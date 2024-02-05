@@ -31,9 +31,11 @@
                 </div>
                 <div class="col-sm-6 clearfix">
                     <div class="user-profile pull-right">
-                        <img class="avatar user-thumb" src="{{ asset('assets/images/author/avatar.png') }}" alt="avatar">
-                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">{{ auth()->user()->nama }} <i
-                                class="fa fa-angle-down"></i></h4>
+                        {{-- <img class="avatar user-thumb" src="{{ asset('assets/images/author/avatar.png') }}" alt="avatar"> --}}
+
+                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">
+                            {{ auth()->user()->nama . '(' . auth()->user()->role . ')' }} <i class="fa fa-angle-down"></i>
+                        </h4>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ route('logout') }}">Log Out</a>
                         </div>
@@ -65,7 +67,7 @@
                                         @endphp
                                         <h6 class="bg-body-tertiary p-2 border-top border-bottom">
                                             {{ $transaksi->tanggal }}
-                                            <span class="float-right">Rp.
+                                            <span class="float-right text-success">+ Rp.
                                                 {{ number_format($totalHarga, 2, ',', '.') }}</span>
                                         </h6>
 
@@ -82,7 +84,7 @@
                                                                 <p class="fw-bold mb-1">{{ $list->invoice }} <span
                                                                         class="float-right">{{ $list->created_at }}</span>
                                                                 </p>
-                                                                <p class="text-muted mb-0">Rp.
+                                                                <p class="mb-0 text-success">+ Rp.
                                                                     {{ number_format($totalHarga, 2, ',', '.') }}
                                                                 </p>
                                                                 @if ($list->status == 'dipesan')

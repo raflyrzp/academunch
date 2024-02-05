@@ -51,6 +51,14 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ],
+            [
+                'nama' => 'Adel',
+                'email' => 'adel@gmail.com',
+                'role' => 'siswa',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+                'remember_token' => Str::random(10),
+            ],
         ];
 
         foreach ($dataUser as $key => $val) {
@@ -121,6 +129,12 @@ class DatabaseSeeder extends Seeder
             [
                 'rekening' => '640909878765',
                 'id_user' => 4,
+                'saldo' => 1000000,
+                'status' => 'aktif'
+            ],
+            [
+                'rekening' => '640909878766',
+                'id_user' => 5,
                 'saldo' => 1000000,
                 'status' => 'aktif'
             ],
