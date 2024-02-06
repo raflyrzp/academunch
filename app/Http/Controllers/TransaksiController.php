@@ -35,11 +35,6 @@ class TransaksiController extends Controller
 
         $totalHarga = $keranjangs->sum('total_harga');
 
-        // foreach ($keranjangs as $keranjang) {
-        //     $totalHargaPerItem = $keranjang->produk->harga * $keranjang->jumlah_produk;
-        //     $totalHarga += $totalHargaPerItem;
-        // }
-
         return view('siswa.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
     }
 
@@ -244,6 +239,7 @@ class TransaksiController extends Controller
         $invoice = session('current_invoice');
         $transaksis = Transaksi::where('invoice', $invoice)->get();
         $totalHarga = $transaksis->sum('total_harga');
+        $tanggal = $transaksis->first()->created_at;
         $status = $transaksis->first()->status;
         $pembeli = $transaksis->first()->user->nama;
 
@@ -261,6 +257,6 @@ class TransaksiController extends Controller
 
         session()->forget('current_invoice');
 
-        return view('invoice.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status', 'pembeli'));
+        return view('invoice.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status', 'pembeli', 'tanggal'));
     }
 }

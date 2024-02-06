@@ -33,7 +33,7 @@
                                 <li class="text-muted">
                                     Nama : {{ $pembeli }}
                                 </li>
-                                <li class="text-muted">{{ now()->format('d F Y') }}</li>
+                                <li class="text-muted">{{ $tanggal }}</li>
                                 <li class="text-muted">{{ $invoice }}</li>
                                 <li class="text-muted">Status : {{ strtoupper($status) }}
                                 </li>

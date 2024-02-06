@@ -35,8 +35,10 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // INVOICE
 Route::get('/transaksi/cetak', [TransaksiController::class, 'cetakTransaksi'])->name('cetak.transaksi');
 Route::get('/riwayat/transaksi/{invoice}', [TransaksiController::class, 'detailRiwayatTransaksi'])->name('transaksi.detail');
-Route::get('/riwayat/cetak-topup', [BankController::class, 'cetakTopup'])->name('cetak.topup');
-Route::get('/riwayat/cetak-withdrawal', [BankController::class, 'cetakWithdrawal'])->name('cetak.withdrawal');
+Route::get('/riwayat/cetak-seluruh-topup', [BankController::class, 'cetakSeluruhTopup'])->name('cetak.seluruh.topup');
+Route::get('/riwayat/cetak-withdrawal', [BankController::class, 'cetakSeluruhWithdrawal'])->name('cetak.seluruh.withdrawal');
+Route::get('/riwayat/cetak-topup/{kode_unik}', [BankController::class, 'cetakTopup'])->name('cetak.topup');
+Route::get('/riwayat/cetak-withdrawal/{kode_unik}', [BankController::class, 'cetakWithdrawal'])->name('cetak.withdrawal');
 
 // TARIK TUNAI
 Route::post('/withdrawal', [BankController::class, 'withdrawal'])->name('withdrawal.request');

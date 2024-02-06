@@ -191,25 +191,56 @@ class BankController extends Controller
         return view('bank.laporan.withdrawal', compact('withdrawals', 'title'));
     }
 
-    public function cetakTopup()
+    public function cetakTopup($kode_unik)
     {
-        $title = 'Cetak Topup';
-        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        $topup = TopUp::where('kode_unik', $kode_unik)->first();
 
-        return view('invoice.cetak-topup', compact('topups', 'title'));
+        return view('invoice.cetak-topup', compact('topup'));
     }
 
-    public function cetakWithdrawal()
+    public function cetakWithdrawal($kode_unik)
     {
-        $title = 'Cetak Withdrawal';
-        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        $withdrawal = Withdrawal::where('kode_unik', $kode_unik)->first();
 
-        return view('invoice.cetak-withdrawal', compact('withdrawals', 'title'));
+        return view('invoice.cetak-withdrawal', compact('withdrawal'));
+    }
+
+    public function cetakSeluruhTopup()
+    {
+        $wallet = Wallet::where('id_user', auth()->id())->first();
+        if (auth()->user()->role == 'siswa') {
+            $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+                ->where('rekening', $wallet->rekening)
+                ->groupBy('tanggal')
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        } else {
+            $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+                ->groupBy('tanggal')
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        }
+
+        return view('invoice.cetak-seluruh-topup', compact('topups', 'wallet'));
+    }
+
+    public function cetakSeluruhWithdrawal()
+    {
+        $wallet = Wallet::where('id_user', auth()->id())->first();
+
+        if (auth()->user()->role == 'siswa') {
+            $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+                ->where('rekening', $wallet->rekening)
+                ->groupBy('tanggal')
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        } else {
+            $withdrawals = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
+                ->groupBy('tanggal')
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        }
+
+        return view('invoice.cetak-seluruh-withdrawal', compact('withdrawals', 'wallet'));
     }
 }
