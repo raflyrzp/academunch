@@ -220,7 +220,7 @@
                             <div class="form-group">
                                 <label for="foto">Foto</label>
                                 <img src="{{ asset('storage/produk/' . $produk->foto) }}" class="mb-3" width="100px">
-                                <input id="foto" name="foto" type="file" class="form-control" required>
+                                <input id="foto" name="foto" type="file" class="form-control">
                             </div>
                         </div>
                         <div class="modal-footer">

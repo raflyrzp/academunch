@@ -54,7 +54,7 @@
                             <div class="card-body">
                                 <h4 class="header-title">Withdrawal</h4>
                                 <button type="button" class="btn btn-primary mb-3" data-toggle="modal"
-                                    data-target="#tariktunaiModal"><i class="ti-plus"></i> Tarik Tunai</button>
+                                    data-target="#tariktunaiModal"><i class="ti-archive"></i> Tarik Tunai</button>
                                 <div class="data-tables">
                                     <table id="table1" class="table table-bordered table-hover">
                                         <thead class="bg-light text-capitalize">

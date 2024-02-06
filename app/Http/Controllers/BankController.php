@@ -35,14 +35,18 @@ class BankController extends Controller
 
     public function topup(Request $request)
     {
-        $request->validate([
+        $validator = $request->validate([
             'nominal' => 'required|integer',
-            'rekening' => 'required|string|exists:wallets,rekening',
+            'rekening' => 'required|string',
         ]);
+
+        $wallet = Wallet::where('rekening', $request->rekening)->first();
+        if (!$wallet) {
+            return redirect()->back()->with('error', 'Nomor rekening tidak valid.');
+        }
 
         if (auth()->user()->role === 'bank') {
             $status = 'dikonfirmasi';
-            $wallet = Wallet::where('rekening', $request->rekening)->first();
             $wallet->saldo += $request->nominal;
             $wallet->save();
         } else {
@@ -88,17 +92,20 @@ class BankController extends Controller
     {
         $request->validate([
             'nominal' => 'required|integer',
-            'rekening' => 'required|string|exists:wallets,rekening',
+            'rekening' => 'required|string',
         ]);
 
         $wallet = Wallet::where('rekening', $request->rekening)->first();
+        if (!$wallet) {
+            return redirect()->back()->with('error', 'Nomor rekening tidak valid.');
+        }
+
         if ($wallet->saldo < $request->nominal) {
             return redirect()->back()->with('error', 'Saldo tidak mencukupi.');
         }
 
         if (auth()->user()->role === 'bank') {
             $status = 'dikonfirmasi';
-            $wallet = Wallet::where('rekening', $request->rekening)->first();
             $wallet->saldo -= $request->nominal;
             $wallet->save();
         } else {

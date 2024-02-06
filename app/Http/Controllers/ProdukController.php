@@ -102,6 +102,7 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $produkLama = Produk::onlyTrashed()->where('nama_produk', $request->nama_produk)->first();
         $request->validate([
             'nama_produk' => [
                 'required',

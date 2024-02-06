@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cetak Top Up</title>
+    <title>Cetak Tarik Tunai</title>
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 </head>
 
@@ -23,7 +23,7 @@
                     <div class="col-md-12 pt-3">
                         <div class="text-center">
                             <i class="fab fa-mdb fa-4x ms-0" style="color: #5d9fc5"></i>
-                            <h4 class="pt-0">Top Up</h4>
+                            <h4 class="pt-0">Tarik Tunai</h4>
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@
                                         {{ $withdrawal->rekening }}
                                     </td>
                                     <td style="vertical-align: middle;">
-                                        {{ $withdrawal->nominal }}
+                                        Rp. {{ number_format($withdrawal->nominal, 2, ',', '.') }}
                                     </td>
                                     <td style="vertical-align: middle;">
                                         {{ $withdrawal->status }}

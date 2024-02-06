@@ -61,7 +61,7 @@
                                         {{ $topup->rekening }}
                                     </td>
                                     <td style="vertical-align: middle;">
-                                        {{ $topup->nominal }}
+                                        Rp. {{ number_format($topup->nominal, 2, ',', '.') }}
                                     </td>
                                     <td style="vertical-align: middle;">
                                         {{ $topup->status }}

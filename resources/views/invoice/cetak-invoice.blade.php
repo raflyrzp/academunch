@@ -95,8 +95,8 @@
             window.print();
 
             window.addEventListener('afterprint', function() {
+                history.go(-2);
 
-                window.location.href = '{{ url()->previous() }}';
             });
 
         });
