@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +48,40 @@ class AuthController extends Controller
         }
     }
 
+    public function regist()
+    {
+        return view('auth.regist');
+    }
+
+    public function store(Request $request)
+    {
+        $validation = $request->validate([
+            "nama" => "required",
+            'email' => 'required|email|unique:users',
+            "password" => "required",
+            "role" => "required"
+        ]);
+
+        if ($request->password !== $request->confirmPassword) {
+            return redirect(route('regist'))->withErrors('Password dan Konfirmasi Password tidak sama.')->withInput();
+        }
+
+        $user = User::create($validation);
+
+        $rekening = '64' . $user->id . now()->format('YmdHis');
+        Wallet::create([
+            'rekening' => $rekening,
+            'id_user' => $user->id,
+            'saldo' => 0,
+            'status' => 'aktif'
+        ]);
+
+        return redirect()->route('login')->with('success', 'Berhasil menambahkan sebuah data pengguna baru!');
+    }
+
     function logout()
     {
+        session()->flush();
         Auth::logout();
         return redirect('');
     }

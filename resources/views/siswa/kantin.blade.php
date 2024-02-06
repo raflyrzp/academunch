@@ -94,7 +94,7 @@
                                     <div class="col-3 mb-5">
                                         <div class="" style="border-radius:20px;">
                                             <div class="d-flex justify-content-center align-items-center position-relative"
-                                                style="max-height: 12em; overflow: hidden; border-radius: 20px;">
+                                                style="height: 12em; overflow: hidden; border-radius: 20px;">
                                                 <img class="card-img-top  position-relative"
                                                     src="{{ asset('storage/produk/' . $produk->foto) }}"
                                                     alt="{{ $produk->nama_produk }}"

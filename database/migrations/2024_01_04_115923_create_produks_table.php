@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text("foto");
             $table->text("desc");
             $table->foreignId('id_kategori')->constrained('kategoris');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

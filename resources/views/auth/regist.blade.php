@@ -33,10 +33,10 @@
     <div class="login-area">
         <div class="container">
             <div class="login-box ptb--100">
-                <form method="post">
+                <form method="post" action="{{ route('regist') }}">
                     @csrf
                     <div class="login-form-head">
-                        <h4>Login</h4>
+                        <h4>Registrasi</h4>
                         <p>Halo, selamat datang di Academunch</p>
                     </div>
                     <div class="login-form-body">
@@ -45,6 +45,13 @@
                                 <small class="text-danger">{{ $error }}</small>
                             @endforeach
                         @endif
+                        <input type="hidden" name="role" value="siswa">
+                        <div class="form-gp">
+                            <label for="nama">Nama</label>
+                            <input type="text" id="nama" name="nama">
+                            <i class="ti-user"></i>
+                            <div class="text-danger"></div>
+                        </div>
                         <div class="form-gp">
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email">
@@ -57,12 +64,18 @@
                             <i class="ti-lock"></i>
                             <div class="text-danger"></div>
                         </div>
+                        <div class="form-gp">
+                            <label for="confirmPassword">Konfirmasi Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword">
+                            <i class="ti-lock"></i>
+                            <div class="text-danger"></div>
+                        </div>
                         <div class="submit-btn-area mt-5">
                             <button id="form_submit" type="submit">Submit <i class="ti-arrow-right"></i></button>
                         </div>
                         <div class="form-footer text-center mt-5">
                             <p class="text-muted">
-                                Belum mempunyai akun? <a href="{{ route('regist') }}">Registrasi!</a>
+                                Sudah mempunyai akun? <a href="{{ route('login') }}">Login!</a>
                             </p>
                         </div>
                     </div>

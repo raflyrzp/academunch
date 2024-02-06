@@ -107,73 +107,72 @@
     </div>
     <!-- main content area end -->
 
-    @foreach ($produks as $produk)
-        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="tambahModalLabel">Tambah Produk</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span>&times;</span>
+    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tambahModalLabel">Tambah Produk</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('produk.store') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="nama_produk">Nama Produk</label>
+                            <input id="nama_produk" name="nama_produk" type="text" placeholder="" class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="harga">Harga</label>
+                            <input id="harga" name="harga" type="text" placeholder="" class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stok">Stok</label>
+                            <input id="stok" name="stok" type="number" placeholder="" class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="id_kategori">
+                                @foreach ($kategoris as $kategori)
+                                    <option value="{{ $kategori->id }}">
+                                        {{ $kategori->nama_kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="desc">Desc</label>
+                            <textarea class="form-control" name="desc" id="desc" cols="30" rows="10" required></textarea>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="foto" name="foto">
+                                <label class="custom-file-label" for="foto">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Tutup</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary ms-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Simpan</span>
                         </button>
                     </div>
-                    <form action="{{ route('produk.store') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="nama_produk">Nama Produk</label>
-                                <input id="nama_produk" name="nama_produk" type="text" placeholder=""
-                                    class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="harga">Harga</label>
-                                <input id="harga" name="harga" type="text" placeholder="" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="stok">Stok</label>
-                                <input id="stok" name="stok" type="number" placeholder="" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="id_kategori">
-                                    @foreach ($kategoris as $kategori)
-                                        <option value="{{ $kategori->id }}">
-                                            {{ $kategori->nama_kategori }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="desc">Desc</label>
-                                <textarea class="form-control" name="desc" id="desc" cols="30" rows="10" required></textarea>
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                                </div>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="foto" name="foto">
-                                    <label class="custom-file-label" for="foto">Choose file</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
-                                <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Tutup</span>
-                            </button>
-                            <button type="submit" class="btn btn-primary ms-1">
-                                <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Simpan</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
-
+    </div>
+    @foreach ($produks as $produk)
         <div class="modal fade" id="editModal{{ $produk->id }}" tabindex="-1" role="dialog"
             aria-labelledby="editModalLabel{{ $produk->id }}" aria-hidden="true">
             <div class="modal-dialog modal-lg">

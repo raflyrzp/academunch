@@ -1,6 +1,63 @@
 @extends('layout.main')
 
 @section('content')
+    @if (auth()->user()->nama === 'Adel' && !session('tampil'))
+        {{-- <link rel="stylesheet" href="{{ asset('assets/js/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}" />
+
+        <script src="{{ asset('assets/js/sweetalert2/sweetalert2.min.js') }}"></script>
+        <script>
+            var Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+
+            Toast.fire({
+                icon: "info",
+                title: "Halo cintaku, manisku, blaem-blaemku❤️",
+            });
+
+            </script> --}}
+
+        <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <section class="p-3"
+                            style="background-image: url({{ asset('assets/images/bg/adel.jpg') }}); background-size:cover; width:100%; height:60vh; background-position:100% center;">
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+                                style="position: absolute; top: 10px; right: 10px;"></button>
+                            <div class="container">
+                                <div class="row">
+                                    <h1 class="text-white ">Halo Cintaku, Manisku, Blaem-blaemku❤️</h1>
+                                    <h1 class="col-12 text-center" style="top:160px; left:80px; font-size:4rem;">❤️</h1>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+
+                var closeButton = document.querySelector('#promoModal .btn-close');
+                closeButton.addEventListener('click', function() {
+                    promoModal.hide();
+                });
+
+                var delayTime = 1000;
+
+                setTimeout(function() {
+                    promoModal.show();
+                }, delayTime);
+            });
+        </script>
+        {{ session(['tampil' => true]) }}
+    @endif
     <!-- main content area start -->
     <div class="main-content">
         <!-- header area start -->

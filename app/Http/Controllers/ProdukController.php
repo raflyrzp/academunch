@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\Kategori;
+use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -37,13 +38,25 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
+        $produkLama = Produk::onlyTrashed()->where('nama_produk', $request->nama_produk)->first();
+        if ($produkLama) {
+            $foto = $request->file('foto');
+            $foto->storeAs('public/produk', $foto->hashName());
+
+            $produkLama->restore();
+            $produkLama->harga = $request->harga;
+            $produkLama->stok = $request->stok;
+            $produkLama->desc = $request->desc;
+            $produkLama->id_kategori = $request->id_kategori;
+            $produkLama->foto = $foto->hashName();
+            $produkLama->save();
+        }
         $request->validate([
             'nama_produk' => 'required|string|max:255|unique:produks,nama_produk',
-            'harga' => 'required|numeric',
-            'stok' => 'required|numeric',
-            'foto' => 'image|mimes:jpeg,jpg,png|max:2048',
-            'desc' => 'required',
             'id_kategori' => 'required|exists:kategoris,id',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|numeric',
+            'desc' => 'required'
         ]);
 
         $existingProduk = Produk::where('nama_produk', $request->nama_produk)->first();
@@ -144,6 +157,12 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
+
+        $keranjangs = Keranjang::where('id_produk', $id)->get();
+
+        foreach ($keranjangs as $keranjang) {
+            $keranjang->delete();
+        }
         Storage::delete('public/produk/' . $produk->image);
         $produk->delete();
 

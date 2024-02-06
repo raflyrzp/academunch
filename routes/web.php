@@ -24,6 +24,11 @@ use App\Http\Controllers\TransaksiController;
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/', [AuthController::class, 'login']);
 
+// REGISTER
+Route::get('/regist', [AuthController::class, 'regist'])->name('regist');
+Route::post('/regist', [AuthController::class, 'store']);
+
+
 //Logout
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 

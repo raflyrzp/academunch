@@ -249,7 +249,7 @@ class TransaksiController extends Controller
 
         $selectedProducts = [];
         foreach ($transaksis as $transaksi) {
-            $produk = Produk::find($transaksi->id_produk);
+            $produk = Produk::withTrashed()->find($transaksi->id_produk);
 
             $selectedProducts[] = [
                 'produk' => $produk,

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user')->constrained('users');
-            $table->foreignId('id_produk')->constrained('produks');
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_produk')->constrained('produks')->onDelete('cascade');
             $table->string('jumlah_produk');
             $table->decimal('total_harga', 10, 0);
             $table->timestamps();
