@@ -2,6 +2,17 @@
 
 use Illuminate\Support\Str;
 
+// Helper function untuk mendapatkan MySQL SSL CA constant
+// Kompatibel dengan PHP 8.5+ yang deprecate PDO::MYSQL_ATTR_SSL_CA
+$getMysqlSslCaConstant = function() {
+    // PHP 8.5+ uses Pdo\Mysql::ATTR_SSL_CA
+    if (class_exists('Pdo\Mysql') && defined('Pdo\Mysql::ATTR_SSL_CA')) {
+        return constant('Pdo\Mysql::ATTR_SSL_CA');
+    }
+    // Fallback for older PHP versions
+    return 1009; // This is the value of PDO::MYSQL_ATTR_SSL_CA
+};
+
 return [
 
     /*
@@ -59,7 +70,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                $getMysqlSslCaConstant() => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 

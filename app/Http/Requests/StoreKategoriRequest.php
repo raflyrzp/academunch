@@ -11,7 +11,7 @@ class StoreKategoriRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,21 @@ class StoreKategoriRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'nama_kategori.required' => 'Nama kategori harus diisi',
+            'nama_kategori.unique' => 'Nama kategori sudah digunakan',
+            'nama_kategori.max' => 'Nama kategori maksimal 255 karakter',
         ];
     }
 }

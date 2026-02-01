@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Wallet;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    protected WalletService $walletService;
+
+    public function __construct(WalletService $walletService)
+    {
+        $this->walletService = $walletService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Data Pengguna';
-        $users = User::all();
-
-        return view('admin.data_pengguna', compact('title', 'users'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
+        return view('admin.data_pengguna', [
+            'title' => 'Data Pengguna',
+            'users' => User::all(),
+        ]);
     }
 
     /**
@@ -33,39 +33,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = $request->validate([
-            "nama" => "required",
-            'email' => 'required|email|unique:users',
-            "password" => "required",
-            "role" => "required"
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'role' => 'required|in:admin,siswa,bank,kantin',
         ]);
 
-        $user = User::create($validation);
+        $user = User::create($validated);
 
-        $rekening = '64' . $user->id . now()->format('dmYHis');
-        Wallet::create([
-            'rekening' => $rekening,
-            'id_user' => $user->id,
-            'saldo' => 0,
-            'status' => 'aktif'
-        ]);
+        $this->walletService->createWallet($user->id);
 
         return redirect()->back()->with('success', 'Berhasil menambahkan sebuah data pengguna baru!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
     }
 
     /**
@@ -73,30 +52,27 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            "nama" => "required",
-            "role" => "required",
-            Rule::unique('users', 'email')->ignore($id),
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($id),
+            ],
+            'role' => 'required|in:admin,siswa,bank,kantin',
+            'password' => 'nullable|min:8',
         ]);
 
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'Pengguna tidak ditemukan.');
-        }
+        $user = User::findOrFail($id);
 
         $user->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'role' => $request->role,
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
         ]);
 
-        if ($request->password) {
-            $request->validate([
-                'password' => 'min:8'
-            ]);
-            $user->password = bcrypt($request->password);
-            $user->save();
+        if (!empty($validated['password'])) {
+            $user->update(['password' => bcrypt($validated['password'])]);
         }
 
         return redirect()->back()->with('success', 'Berhasil mengedit sebuah data pengguna!');
@@ -108,11 +84,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-
-        // if ($user->wallets) {
-        //     $user->wallets->delete();
-        // }
-
         $user->delete();
 
         return redirect()->back()->with('success', 'Berhasil menghapus sebuah data pengguna!');

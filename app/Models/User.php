@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -44,23 +45,75 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function hasRole($role)
+    /**
+     * Cek apakah user memiliki role tertentu
+     */
+    public function hasRole(string $role): bool
     {
-        return $this->role == $role;
+        return $this->role === $role;
     }
 
-    public function wallets()
+    /**
+     * Cek apakah user adalah admin
+     */
+    public function isAdmin(): bool
     {
-        return $this->hasMany(Wallet::class);
+        return $this->hasRole('admin');
     }
 
-    public function transaksis()
+    /**
+     * Cek apakah user adalah siswa
+     */
+    public function isSiswa(): bool
     {
-        return $this->hasMany(Transaksi::class);
+        return $this->hasRole('siswa');
     }
 
-    public function keranjangs()
+    /**
+     * Cek apakah user adalah bank
+     */
+    public function isBank(): bool
     {
-        return $this->hasMany(Keranjang::class);
+        return $this->hasRole('bank');
+    }
+
+    /**
+     * Cek apakah user adalah kantin
+     */
+    public function isKantin(): bool
+    {
+        return $this->hasRole('kantin');
+    }
+
+    /**
+     * Get the wallet for the user.
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class, 'id_user');
+    }
+
+    /**
+     * Get all wallets for the user (legacy support).
+     */
+    public function wallets(): HasMany
+    {
+        return $this->hasMany(Wallet::class, 'id_user');
+    }
+
+    /**
+     * Get all transaksis for the user.
+     */
+    public function transaksis(): HasMany
+    {
+        return $this->hasMany(Transaksi::class, 'id_user');
+    }
+
+    /**
+     * Get all keranjangs for the user.
+     */
+    public function keranjangs(): HasMany
+    {
+        return $this->hasMany(Keranjang::class, 'id_user');
     }
 }

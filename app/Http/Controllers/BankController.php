@@ -2,251 +2,229 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\TopUp;
-use App\Models\Wallet;
-use App\Models\Withdrawal;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\TopupRequest;
+use App\Http\Requests\WithdrawalRequest;
+use App\Models\TopUp;
+use App\Models\Withdrawal;
+use App\Services\BankingService;
+use App\Services\WalletService;
 
 class BankController extends Controller
 {
+    protected BankingService $bankingService;
+    protected WalletService $walletService;
+
+    public function __construct(BankingService $bankingService, WalletService $walletService)
+    {
+        $this->bankingService = $bankingService;
+        $this->walletService = $walletService;
+    }
+
+    /**
+     * Index siswa topup
+     */
     public function topupIndex()
     {
-        $wallets = Wallet::all();
-        return view('siswa.topup', compact('wallets'));
+        return view('siswa.topup', [
+            'wallets' => \App\Models\Wallet::all(),
+        ]);
     }
 
+    /**
+     * Index bank topup
+     */
     public function bankTopupIndex()
     {
-        $title = 'Top Up';
-        $topups = TopUp::all();
-        return view('bank.topup', compact('topups', 'title'));
+        return view('bank.topup', [
+            'title' => 'Top Up',
+            'topups' => TopUp::all(),
+        ]);
     }
 
+    /**
+     * Index bank withdrawal
+     */
     public function bankWithdrawalIndex()
     {
-        $title = 'Tarik Tunai';
-        $withdrawals = Withdrawal::all();
-        return view('bank.withdrawal', compact('withdrawals', 'title'));
+        return view('bank.withdrawal', [
+            'title' => 'Tarik Tunai',
+            'withdrawals' => Withdrawal::all(),
+        ]);
     }
 
-    public function topup(Request $request)
+    /**
+     * Proses topup
+     */
+    public function topup(TopupRequest $request)
     {
-        $validator = $request->validate([
-            'nominal' => 'required|integer',
-            'rekening' => 'required|string',
-        ]);
+        try {
+            $isBank = auth()->user()->role === 'bank';
+            
+            $this->bankingService->processTopup(
+                $request->rekening,
+                $request->nominal,
+                $isBank
+            );
 
-        $wallet = Wallet::where('rekening', $request->rekening)->first();
-        if (!$wallet) {
-            return redirect()->back()->with('error', 'Nomor rekening tidak valid.');
+            return redirect()->back()->with('success', 'Permintaan Top Up berhasil');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        if (auth()->user()->role === 'bank') {
-            $status = 'dikonfirmasi';
-            $wallet->saldo += $request->nominal;
-            $wallet->save();
-        } else {
-            $status = 'menunggu';
-        }
-
-        $kodeUnik = "TU" . auth()->user()->id . now()->format('dmYHis');
-        $topup = TopUp::create([
-            'rekening' => $request->rekening,
-            'nominal' => $request->nominal,
-            'kode_unik' => $kodeUnik,
-            'status' => $status,
-        ]);
-
-        return redirect()->back()->with('success', 'Permintaan Top Up berhasil');
     }
 
+    /**
+     * Konfirmasi topup
+     */
     public function konfirmasiTopup($id)
     {
-        $topup = TopUp::findOrFail($id);
-
-        $topup->status = 'dikonfirmasi';
-        $topup->save();
-
-        $wallet = Wallet::where('rekening', $topup->rekening)->first();
-        $wallet->saldo += $topup->nominal;
-        $wallet->save();
+        $this->bankingService->confirmTopup($id);
 
         return redirect()->route('bank.index')->with('success', 'Top Up dikonfirmasi');
     }
 
+    /**
+     * Tolak topup
+     */
     public function tolakTopup($id)
     {
-        $topup = TopUp::findOrFail($id);
-
-        $topup->status = 'ditolak';
-        $topup->save();
+        $this->bankingService->rejectTopup($id);
 
         return redirect()->route('bank.index')->with('error', 'Top Up telah ditolak');
     }
 
-    public function withdrawal(Request $request)
+    /**
+     * Proses withdrawal
+     */
+    public function withdrawal(WithdrawalRequest $request)
     {
-        $request->validate([
-            'nominal' => 'required|integer',
-            'rekening' => 'required|string',
-        ]);
+        try {
+            $isBank = auth()->user()->role === 'bank';
+            
+            $this->bankingService->processWithdrawal(
+                $request->rekening,
+                $request->nominal,
+                $isBank
+            );
 
-        $wallet = Wallet::where('rekening', $request->rekening)->first();
-        if (!$wallet) {
-            return redirect()->back()->with('error', 'Nomor rekening tidak valid.');
+            return redirect()->back()->with('success', 'Permintaan Withdrawal berhasil');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        if ($wallet->saldo < $request->nominal) {
-            return redirect()->back()->with('error', 'Saldo tidak mencukupi.');
-        }
-
-        if (auth()->user()->role === 'bank') {
-            $status = 'dikonfirmasi';
-            $wallet->saldo -= $request->nominal;
-            $wallet->save();
-        } else {
-            $status = 'menunggu';
-        }
-
-        $kodeUnik = "WD" . auth()->user()->id . now()->format('dmYHis');
-        $withdrawal = Withdrawal::create([
-            'rekening' => $request->rekening,
-            'nominal' => $request->nominal,
-            'kode_unik' => $kodeUnik,
-            'status' => $status,
-        ]);
-
-
-
-        return redirect()->back()->with('success', 'Permintaan Withdrawal berhasil');
     }
 
+    /**
+     * Konfirmasi withdrawal
+     */
     public function konfirmasiWithdrawal($id)
     {
-        $withdrawal = Withdrawal::findOrFail($id);
-
-        $withdrawal->status = 'dikonfirmasi';
-        $withdrawal->save();
-
-        $wallet = Wallet::where('rekening', $withdrawal->rekening)->first();
-        $wallet->saldo -= $withdrawal->nominal;
-        $wallet->save();
+        $this->bankingService->confirmWithdrawal($id);
 
         return redirect()->route('bank.index')->with('success', 'Withdrawal dikonfirmasi');
     }
 
+    /**
+     * Tolak withdrawal
+     */
     public function tolakWithdrawal($id)
     {
-        $withdrawal = Withdrawal::findOrFail($id);
-
-        $withdrawal->status = 'ditolak';
-        $withdrawal->save();
+        $this->bankingService->rejectWithdrawal($id);
 
         return redirect()->route('bank.index')->with('error', 'Withdrawal ditolak');
     }
 
+    /**
+     * Riwayat topup siswa
+     */
     public function riwayatTopup()
     {
-        $title = 'Riwayat Top Up';
-        $wallet = Wallet::where('id_user', auth()->id())->first();
-        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->where('rekening', $wallet->rekening)
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        return view('siswa.riwayat.topup', compact('topups', 'title', 'wallet'));
+        $wallet = $this->walletService->findByUserId(auth()->id());
+        
+        return view('siswa.riwayat.topup', [
+            'title' => 'Riwayat Top Up',
+            'topups' => $this->bankingService->getTopupReport($wallet->rekening),
+            'wallet' => $wallet,
+        ]);
     }
 
+    /**
+     * Riwayat withdrawal siswa
+     */
     public function riwayatWithdrawal()
     {
-        $title = 'Riwayat Tarik Tunai';
-        $wallet = Wallet::where('id_user', auth()->id())->first();
-        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->where('rekening', $wallet->rekening)
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        return view('siswa.riwayat.withdrawal', compact('withdrawals', 'title', 'wallet'));
+        $wallet = $this->walletService->findByUserId(auth()->id());
+        
+        return view('siswa.riwayat.withdrawal', [
+            'title' => 'Riwayat Tarik Tunai',
+            'withdrawals' => $this->bankingService->getWithdrawalReport($wallet->rekening),
+            'wallet' => $wallet,
+        ]);
     }
 
+    /**
+     * Laporan topup bank
+     */
     public function laporanTopup()
     {
-        $title = 'Laporan Top Up';
-
-        $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        return view('bank.laporan.topup', compact('topups', 'title'));
+        return view('bank.laporan.topup', [
+            'title' => 'Laporan Top Up',
+            'topups' => $this->bankingService->getTopupReport(),
+        ]);
     }
 
+    /**
+     * Laporan withdrawal bank
+     */
     public function laporanWithdrawal()
     {
-        $title = 'Laporan Tarik Tunai';
-        $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        return view('bank.laporan.withdrawal', compact('withdrawals', 'title'));
+        return view('bank.laporan.withdrawal', [
+            'title' => 'Laporan Tarik Tunai',
+            'withdrawals' => $this->bankingService->getWithdrawalReport(),
+        ]);
     }
 
+    /**
+     * Cetak topup individual
+     */
     public function cetakTopup($kode_unik)
     {
-        $topup = TopUp::where('kode_unik', $kode_unik)->first();
+        $topup = TopUp::where('kode_unik', $kode_unik)->firstOrFail();
 
         return view('invoice.cetak-topup', compact('topup'));
     }
 
+    /**
+     * Cetak withdrawal individual
+     */
     public function cetakWithdrawal($kode_unik)
     {
-        $withdrawal = Withdrawal::where('kode_unik', $kode_unik)->first();
+        $withdrawal = Withdrawal::where('kode_unik', $kode_unik)->firstOrFail();
 
         return view('invoice.cetak-withdrawal', compact('withdrawal'));
     }
 
+    /**
+     * Cetak seluruh topup
+     */
     public function cetakSeluruhTopup()
     {
-        $wallet = Wallet::where('id_user', auth()->id())->first();
-        if (auth()->user()->role == 'siswa') {
-            $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-                ->where('rekening', $wallet->rekening)
-                ->groupBy('tanggal')
-                ->orderBy('tanggal', 'desc')
-                ->get();
-        } else {
-            $topups = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-                ->groupBy('tanggal')
-                ->orderBy('tanggal', 'desc')
-                ->get();
-        }
+        $wallet = $this->walletService->findByUserId(auth()->id());
+        
+        $rekening = auth()->user()->role === 'siswa' ? $wallet->rekening : null;
+        $topups = $this->bankingService->getTopupReport($rekening);
 
         return view('invoice.cetak-seluruh-topup', compact('topups', 'wallet'));
     }
 
+    /**
+     * Cetak seluruh withdrawal
+     */
     public function cetakSeluruhWithdrawal()
     {
-        $wallet = Wallet::where('id_user', auth()->id())->first();
-
-        if (auth()->user()->role == 'siswa') {
-            $withdrawals = Withdrawal::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-                ->where('rekening', $wallet->rekening)
-                ->groupBy('tanggal')
-                ->orderBy('tanggal', 'desc')
-                ->get();
-        } else {
-            $withdrawals = TopUp::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(nominal) as nominal'))
-                ->groupBy('tanggal')
-                ->orderBy('tanggal', 'desc')
-                ->get();
-        }
+        $wallet = $this->walletService->findByUserId(auth()->id());
+        
+        $rekening = auth()->user()->role === 'siswa' ? $wallet->rekening : null;
+        $withdrawals = $this->bankingService->getWithdrawalReport($rekening);
 
         return view('invoice.cetak-seluruh-withdrawal', compact('withdrawals', 'wallet'));
     }

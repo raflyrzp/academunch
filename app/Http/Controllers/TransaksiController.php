@@ -2,261 +2,242 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk;
-use App\Models\Wallet;
-use App\Models\Keranjang;
-use App\Models\Transaksi;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AddToCartRequest;
+use App\Models\Keranjang;
+use App\Models\Produk;
+use App\Models\Transaksi;
+use App\Services\TransaksiService;
+use App\Services\WalletService;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
+    protected TransaksiService $transaksiService;
+    protected WalletService $walletService;
+
+    public function __construct(TransaksiService $transaksiService, WalletService $walletService)
+    {
+        $this->transaksiService = $transaksiService;
+        $this->walletService = $walletService;
+    }
+
+    /**
+     * Tampilkan halaman kantin untuk siswa
+     */
     public function siswaKantinIndex()
     {
-        $title = 'Kantin';
-        $produks = Produk::all();
-        $bestSeller = Produk::select('produks.*', DB::raw('SUM(transaksis.kuantitas) as total_terjual'))
-            ->join('transaksis', 'produks.id', '=', 'transaksis.id_produk')
-            ->groupBy('produks.id')
-            ->orderByDesc('total_terjual')
-            ->first();
-
-        return view('siswa.kantin', compact('title', 'produks', 'bestSeller'));
+        return view('siswa.kantin', [
+            'title' => 'Kantin',
+            'produks' => Produk::all(),
+            'bestSeller' => $this->transaksiService->getBestSeller(),
+        ]);
     }
 
+    /**
+     * Tampilkan halaman keranjang
+     */
     public function keranjangIndex()
     {
-        $title = 'Keranjang';
-        $id_user = Auth::id();
-        $keranjangs = Keranjang::where('id_user', $id_user)->get();
-        $wallet = Wallet::where('id_user', auth()->id())->first();
-
-        $totalHarga = $keranjangs->sum('total_harga');
-
-        return view('siswa.keranjang', compact('title', 'keranjangs', 'totalHarga', 'wallet'));
+        $userId = auth()->id();
+        $keranjangs = Keranjang::where('id_user', $userId)->with('produk')->get();
+        
+        return view('siswa.keranjang', [
+            'title' => 'Keranjang',
+            'keranjangs' => $keranjangs,
+            'totalHarga' => $keranjangs->sum('total_harga'),
+            'wallet' => $this->walletService->findByUserId($userId),
+        ]);
     }
 
-    public function addToCart(Request $request)
+    /**
+     * Tambah produk ke keranjang
+     */
+    public function addToCart(AddToCartRequest $request)
     {
-        $request->validate([
-            'jumlah_produk' => 'required|numeric',
-            'id_produk' => 'required',
-            'id_user' => 'required',
-            'harga' => 'required'
-        ]);
-
-        $id_user = $request->id_user;
         $produk = Produk::find($request->id_produk);
 
         if (!$produk) {
             return redirect()->back()->with('error', 'Produk tidak ditemukan');
         }
 
-        $jumlah_produk = $request->jumlah_produk;
-        $total_harga = $request->harga * $jumlah_produk;
+        $totalHarga = $request->harga * $request->jumlah_produk;
 
-        $produk_sama = Keranjang::where('id_user', $id_user)->where('id_produk', $produk->id)->first();
+        $existingItem = Keranjang::where('id_user', $request->id_user)
+            ->where('id_produk', $produk->id)
+            ->first();
 
-        if ($produk_sama) {
-            $produk_sama->jumlah_produk += $jumlah_produk;
-            $produk_sama->total_harga += $total_harga;
-            $produk_sama->save();
+        if ($existingItem) {
+            $existingItem->increment('jumlah_produk', $request->jumlah_produk);
+            $existingItem->increment('total_harga', $totalHarga);
         } else {
             Keranjang::create([
-                'id_user' => $id_user,
+                'id_user' => $request->id_user,
                 'id_produk' => $produk->id,
-                'jumlah_produk' => $jumlah_produk,
-                'total_harga' => $total_harga,
+                'jumlah_produk' => $request->jumlah_produk,
+                'total_harga' => $totalHarga,
             ]);
         }
 
         return redirect()->back()->with('success', 'Berhasil menambah produk ke keranjang');
     }
 
+    /**
+     * Hapus item dari keranjang
+     */
     public function keranjangDestroy($id)
     {
         $keranjang = Keranjang::findOrFail($id);
-
-        if (!$keranjang) {
-            return redirect()->back()->with('error', 'Produk tidak ditemukan.');
-        }
-
         $keranjang->delete();
 
         return redirect()->back()->with('success', 'Berhasil menghapus produk dari keranjang.');
     }
 
-    public function checkout(Request $request)
+    /**
+     * Proses checkout
+     */
+    public function checkout()
     {
-        $id_user = auth()->user()->id;
+        try {
+            $result = $this->transaksiService->processCheckout(auth()->id());
+            
+            session(['current_invoice' => $result['invoice']]);
 
-        $selectedProducts = Keranjang::where('id_user', $id_user)
-            ->get();
-
-        $totalHarga = $selectedProducts->sum('total_harga');
-        $userWallet = Wallet::where('id_user', $id_user)->first();
-
-        if ($userWallet->saldo < $totalHarga) {
-            return redirect()->route('siswa.index')->with(['error' => 'Saldo anda tidak mencukupi.']);
+            return view('invoice.invoice', [
+                'title' => 'Invoice',
+                'invoice' => $result['invoice'],
+                'totalHarga' => $result['total_harga'],
+                'selectedProducts' => $result['products'],
+                'pembeli' => auth()->user()->nama,
+                'email' => auth()->user()->email,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('siswa.index')->with(['error' => $e->getMessage()]);
         }
-        $invoice = 'INV' . auth()->user()->id . now()->format('dmYHis');
-        session(['current_invoice' => $invoice]);
-
-        foreach ($selectedProducts as $selectedProduct) {
-            $transaksi = new Transaksi();
-            $transaksi->id_user = $id_user;
-            $transaksi->id_produk = $selectedProduct->id_produk;
-            $transaksi->harga = $selectedProduct->produk->harga;
-            $transaksi->total_harga = $selectedProduct->total_harga;
-            $transaksi->kuantitas = $selectedProduct->jumlah_produk;
-            $transaksi->invoice = $invoice;
-            $transaksi->save();
-
-            $produk = Produk::find($selectedProduct->id_produk);
-            $produk->stok -= $selectedProduct->jumlah_produk;
-            $produk->save();
-
-            $selectedProduct->delete();
-        }
-
-        $userWallet->saldo -= $totalHarga;
-        $userWallet->save();
-        $pembeli = auth()->user()->nama;
-        $email = auth()->user()->email;
-
-        $title = 'Invoice';
-        return view('invoice.invoice', compact('selectedProducts', 'totalHarga', 'title', 'invoice', 'pembeli', 'email'));
     }
 
+    /**
+     * Konfirmasi transaksi oleh kantin
+     */
     public function konfirmasiTransaksi($invoice)
     {
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-
-        foreach ($transaksis as $transaksi) {
-            $transaksi->status = 'dikonfirmasi';
-            $transaksi->save();
-        }
+        $this->transaksiService->confirmTransaction($invoice);
 
         return redirect()->back()->with('success', 'Transaksi dikonfirmasi');
     }
 
+    /**
+     * Tolak transaksi oleh kantin
+     */
     public function tolakTransaksi($invoice)
     {
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-
-        foreach ($transaksis as $transaksi) {
-            $produks = Produk::where('id', $transaksi->id_produk)->get();
-            foreach ($produks as $produk) {
-                $produk->stok += $transaksi->kuantitas;
-                $produk->save();
-            }
-
-            $transaksi->status = 'ditolak';
-            $transaksi->save();
-        }
-        $totalHarga = $transaksis->sum('total_harga');
-
-        $wallet = Wallet::where('id_user', $transaksi->id_user)->first();
-        $wallet->saldo += $totalHarga;
-        $wallet->save();
+        $this->transaksiService->rejectTransaction($invoice);
 
         return redirect()->back()->with('success', 'Transaksi ditolak');
     }
 
+    /**
+     * Batalkan transaksi oleh siswa
+     */
     public function batalTransaksi($invoice)
     {
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
+        try {
+            $this->transaksiService->cancelTransaction($invoice);
 
-        foreach ($transaksis as $transaksi) {
-            if ($transaksi->status === 'dikonfirmasi') {
-                return redirect()->back()->with('error', 'Transaksi sudah dikonfirmasi.');
-            } else {
-                $produks = Produk::where('id', $transaksi->id_produk)->get();
-                foreach ($produks as $produk) {
-                    $produk->stok += $transaksi->kuantitas;
-                    $produk->save();
-                }
-
-                $transaksi->status = 'batal';
-                $transaksi->save();
-            }
+            return redirect()->back()->with('success', 'Transaksi dibatalkan');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-        $totalHarga = $transaksis->sum('total_harga');
-
-        $wallet = Wallet::where('id_user', $transaksi->id_user)->first();
-        $wallet->saldo += $totalHarga;
-        $wallet->save();
-
-        return redirect()->back()->with('success', 'Transaksi dibatalkan');
     }
 
-
+    /**
+     * Laporan transaksi kantin
+     */
     public function laporanTransaksi()
     {
-        $title = 'Laporan Transaksi';
+        $transaksis = $this->transaksiService->getDailyReport();
+        $totalHargaPerHari = Transaksi::whereIn('status', ['dipesan', 'dikonfirmasi'])
+            ->sum('total_harga');
 
-        $transaksis = Transaksi::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        $totalHargaPerHari = Transaksi::whereIn('status', ['dipesan', 'dikonfirmasi'])->sum('total_harga');
-
-        $totalHarga = $transaksis->sum('total_harga');
-
-        return view('kantin.laporan.transaksi', compact('transaksis', 'totalHarga', 'title', 'totalHargaPerHari'));
+        return view('kantin.laporan.transaksi', [
+            'title' => 'Laporan Transaksi',
+            'transaksis' => $transaksis,
+            'totalHarga' => $transaksis->sum('total_harga'),
+            'totalHargaPerHari' => $totalHargaPerHari,
+        ]);
     }
 
+    /**
+     * Riwayat transaksi siswa
+     */
     public function riwayatTransaksi()
     {
-        $title = 'Riwayat Transaksi';
-        $transaksis = Transaksi::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(total_harga) as total_harga'))
-            ->where('id_user', auth()->id())
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        return view('siswa.riwayat.transaksi', compact('transaksis', 'title'));
+        return view('siswa.riwayat.transaksi', [
+            'title' => 'Riwayat Transaksi',
+            'transaksis' => $this->transaksiService->getDailyReport(auth()->id()),
+        ]);
     }
 
+    /**
+     * Detail riwayat transaksi
+     */
     public function detailRiwayatTransaksi($invoice)
     {
-        $title = 'Detail Pembelian';
+        $selectedProducts = Transaksi::where('invoice', $invoice)->with('produk', 'user')->get();
+        
+        if ($selectedProducts->isEmpty()) {
+            abort(404);
+        }
 
-        $selectedProducts = Transaksi::where('invoice', $invoice)->get();
-        $totalHarga = $selectedProducts->sum('total_harga');
-        $pembeli = $selectedProducts->first()->user->nama;
-        $email = $selectedProducts->first()->user->email;
         session(['current_invoice' => $invoice]);
 
-        return view('invoice.invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'title', 'pembeli', 'email'));
+        return view('invoice.invoice', [
+            'title' => 'Detail Pembelian',
+            'invoice' => $invoice,
+            'totalHarga' => $selectedProducts->sum('total_harga'),
+            'selectedProducts' => $selectedProducts,
+            'pembeli' => $selectedProducts->first()->user->nama,
+            'email' => $selectedProducts->first()->user->email,
+        ]);
     }
 
+    /**
+     * Cetak transaksi
+     */
     public function cetakTransaksi()
     {
         $invoice = session('current_invoice');
-        $transaksis = Transaksi::where('invoice', $invoice)->get();
-        $totalHarga = $transaksis->sum('total_harga');
-        $tanggal = $transaksis->first()->created_at;
-        $status = $transaksis->first()->status;
-        $pembeli = $transaksis->first()->user->nama;
+        
+        if (!$invoice) {
+            return redirect()->route('siswa.riwayat.transaksi')->with('error', 'Invoice tidak ditemukan');
+        }
 
-        $selectedProducts = [];
-        foreach ($transaksis as $transaksi) {
+        $transaksis = Transaksi::where('invoice', $invoice)->with('user')->get();
+        
+        if ($transaksis->isEmpty()) {
+            return redirect()->route('siswa.riwayat.transaksi')->with('error', 'Transaksi tidak ditemukan');
+        }
+
+        $selectedProducts = $transaksis->map(function ($transaksi) {
             $produk = Produk::withTrashed()->find($transaksi->id_produk);
-
-            $selectedProducts[] = [
+            
+            return [
                 'produk' => $produk,
                 'nama_produk' => $produk->nama_produk,
                 'kuantitas' => $transaksi->kuantitas,
                 'total_harga' => $transaksi->total_harga,
             ];
-        }
+        })->toArray();
 
         session()->forget('current_invoice');
 
-        return view('invoice.cetak-invoice', compact('selectedProducts', 'totalHarga', 'invoice', 'status', 'pembeli', 'tanggal'));
+        return view('invoice.cetak-invoice', [
+            'selectedProducts' => $selectedProducts,
+            'totalHarga' => $transaksis->sum('total_harga'),
+            'invoice' => $invoice,
+            'status' => $transaksis->first()->status,
+            'pembeli' => $transaksis->first()->user->nama,
+            'tanggal' => $transaksis->first()->created_at,
+        ]);
     }
 }
